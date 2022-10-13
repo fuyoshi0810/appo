@@ -1,0 +1,10 @@
+環境
+flutter 3.3.4
+Dart2.18.2
+
+
+flutter SDKバージョン 31以上     targetSdkVersion 31   
+Firestore  
+
+dart命名規則
+https://de-milestones.com/dart_naming_convention/
