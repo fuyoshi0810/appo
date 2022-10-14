@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class C_Account extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(appBar: AppBar(), body: Text("アカウント作成画面"));
   }
 }

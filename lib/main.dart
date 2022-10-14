@@ -1,7 +1,16 @@
+//担当者：中島
 import 'package:appo/create_account.dart';
 import 'package:appo/create_schedule.dart';
 import 'package:appo/edit_schedule.dart';
 import 'package:appo/schedule_list.dart';
+
+//担当者：藤尾
+import 'package:appo/map.dart';
+import 'package:appo/choice_group.dart';
+import 'package:appo/create_group.dart';
+import 'package:appo/search_group.dart';
+import 'package:appo/settings_group.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,8 +39,8 @@ class MyApp extends StatelessWidget {
         '/s_group': (context) => SettingsGroup(),
         '/map': (context) => Map(),
         '/s_group': (context) => SearchGroup(),
-        '/c_group': (context) => Create_Group(),
-        '/choice_group': (context) => Choice_Group(),
+        '/c_group': (context) => CreateGroup(),
+        '/choice_group': (context) => ChoiceGroup(),
       },
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -67,6 +76,18 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/choice_group');
+                },
+                child: Text("ログイン")),
+            TextButton(
+              child: Text("アカウントを作成"),
+              onPressed: () {
+                //グループ選択画面へ遷移
+                Navigator.pushNamed(context, '/c_account');
+              },
+            )
           ],
         ),
       ),
