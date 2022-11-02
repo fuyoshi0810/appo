@@ -8,7 +8,6 @@ import 'package:appo/schedule_list.dart';
 import 'package:appo/map.dart';
 import 'package:appo/choice_group.dart';
 import 'package:appo/create_group.dart';
-import 'package:appo/search_group.dart';
 import 'package:appo/settings_group.dart';
 
 import 'package:flutter/material.dart';
@@ -38,7 +37,6 @@ class MyApp extends StatelessWidget {
         '/e_schedule': (context) => E_Schedule(),
         '/s_group': (context) => SettingsGroup(),
         '/map': (context) => Map(),
-        '/s_group': (context) => SearchGroup(),
         '/c_group': (context) => CreateGroup(),
         '/choice_group': (context) => ChoiceGroup(),
       },
