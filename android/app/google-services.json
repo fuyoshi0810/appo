@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "99159866518",
+    "project_id": "appo-656ac",
+    "storage_bucket": "appo-656ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99159866518:android:a224037b43a9dde24f56b7",
+        "android_client_info": {
+          "package_name": "com.example.appo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "99159866518-cisf4j15vct2nq7i4cogf1to131a60ec.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXjrqVi28SifGdkyv3-GzmiQrmwXQ2MLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "99159866518-cisf4j15vct2nq7i4cogf1to131a60ec.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "99159866518-hk2tsj0v0tnd5ja29s4c6gtm4cej659n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.appo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
