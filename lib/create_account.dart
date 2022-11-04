@@ -1,4 +1,4 @@
-import 'dart:html';
+// import 'dart:html';
 
 import 'package:flutter/material.dart';
 
@@ -49,6 +49,7 @@ class AuthPageState extends ConsumerState<C_Account> {
           TextField(
             decoration: const InputDecoration(
               label: Text('ユーザー名'),
+              icon: Icon(Icons.account_circle),
             ),
             controller: userController,
           ),

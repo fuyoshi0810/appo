@@ -21,6 +21,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'dart:async';
 
+//DatePicker日本語化
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 // await Firebase.initializeApp(
 //   options: DefaultFirebaseOptions.currentPlatform,
 // );
@@ -98,7 +101,6 @@ class MyApp extends ConsumerWidget {
         primarySwatch: Colors.blue,
       ),
       routes: {
-
         '/': (context) => LogInPage(),
         '/c_account': (context) => C_Account(), //アカウント作成画面
         '/s_list': (context) => S_list(), //スケジュール一覧画面
@@ -108,10 +110,13 @@ class MyApp extends ConsumerWidget {
         '/map': (context) => Map(), //マップ画面
         '/c_group': (context) => CreateGroup(), //グループ作成画面
         '/choice_group': (context) => ChoiceGroup(), //グループ選択画面
-
       },
       // home: const LoginPage(),
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
     );
   }
 }
