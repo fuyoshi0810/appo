@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-class S_list extends StatelessWidget {
+class ScheduleList extends StatelessWidget {
+  const ScheduleList({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,17 +10,17 @@ class S_list extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("スケジュール一覧画面"),
+            const Text("スケジュール一覧画面"),
             ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/c_schedule');
                 },
-                child: Text("スケジュール作成")),
+                child: const Text("スケジュール作成")),
             ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/map');
                 },
-                child: Text("マップ")),
+                child: const Text("マップ")),
           ],
         ),
       ),

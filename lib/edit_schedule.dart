@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-class E_Schedule extends StatelessWidget {
+class EditSchedule extends StatelessWidget {
+  const EditSchedule({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(), body: Text("スケジュール編集画面"));
+    return Scaffold(appBar: AppBar(), body: const Text("スケジュール編集画面"));
   }
 }
