@@ -50,6 +50,8 @@ dependencies:
   # firebase_crashlytics: ^2.8.0  バージョン違い
   google_maps_flutter: ^2.2.1
   geolocator: ^8.2.0
+  google_maps_webservice: ^0.0.19
+  flutter_google_places: ^0.3.0
 
 
 dev_dependencies:

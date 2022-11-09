@@ -12,6 +12,7 @@ import 'package:appo/map.dart';
 import 'package:appo/choice_group.dart';
 import 'package:appo/create_group.dart';
 import 'package:appo/settings_group.dart';
+import 'package:appo/group_menu.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -91,6 +92,7 @@ class MyApp extends ConsumerWidget {
         '/s_list': (context) => const ScheduleList(), //スケジュール一覧画面
         '/c_schedule': (context) => CreateSchedule(), //スケジュール作成画面
         '/e_schedule': (context) => const EditSchedule(), //スケジュール編集画面
+        '/g_menu': (context) => GroupMenu(), //グループ設定画面
         '/s_group': (context) => SettingsGroup(), //グループ設定画面
         '/map': (context) => Map(), //マップ画面
         '/c_group': (context) => CreateGroup(), //グループ作成画面
