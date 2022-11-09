@@ -9,7 +9,7 @@ class ChoiceGroup extends StatelessWidget {
         appBar: AppBar(
           title: Text('グループ選択'),
         ),
-        body: Center(
+        body: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -33,7 +33,7 @@ class ChoiceGroup extends StatelessWidget {
                     return ListTile(
                       title: Text('${items[index]}'),
                       onTap: () {
-                        Navigator.pushNamed(context, '/map');
+                        Navigator.pushNamed(context, '/g_menu');
                       },
                     );
                   },
