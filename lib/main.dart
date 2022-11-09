@@ -1,17 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 //担当者：中島
 import 'package:appo/create_account.dart';
 import 'package:appo/create_schedule.dart';
 import 'package:appo/edit_schedule.dart';
 import 'package:appo/schedule_list.dart';
-
 //担当者：藤尾
 import 'package:appo/map.dart';
 import 'package:appo/choice_group.dart';
 import 'package:appo/create_group.dart';
 import 'package:appo/settings_group.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -89,13 +89,17 @@ class MyApp extends ConsumerWidget {
         '/': (context) => const LogInPage(), //ログイン画面
         '/c_account': (context) => const CreateAccount(), //アカウント作成画面
         '/s_list': (context) => const ScheduleList(), //スケジュール一覧画面
-        '/c_schedule': (context) => const CreateSchedule(), //スケジュール作成画面
+        '/c_schedule': (context) => CreateSchedule(), //スケジュール作成画面
         '/e_schedule': (context) => const EditSchedule(), //スケジュール編集画面
         '/s_group': (context) => SettingsGroup(), //グループ設定画面
-        '/map': (context) => const Map(), //マップ画面
+        '/map': (context) => Map(), //マップ画面
         '/c_group': (context) => CreateGroup(), //グループ作成画面
         '/choice_group': (context) => ChoiceGroup(), //グループ選択画面
       },
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
     );
   }

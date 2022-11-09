@@ -89,11 +89,17 @@ class AuthPageState extends ConsumerState<CreateAccount> {
                         .collection('users')
                         .doc(credential.user!.uid)
                         .set({
-                      'user_name': userController.text,
+                      'userId': DateTime.now().day.toString() +
+                          DateTime.now().hour.toString() +
+                          DateTime.now().second.toString() +
+                          DateTime.now().year.toString().substring(2, 4) +
+                          DateTime.now().minute.toString() +
+                          DateTime.now().month.toString(),
+                      'userName': userController.text,
                       'email': mailController.text,
                       'password': passController.text,
                       'createdAt': FieldValue.serverTimestamp(),
-                      'updatedAt': FieldValue.serverTimestamp()
+                      'updatedAt': FieldValue.serverTimestamp(),
                     });
                   } else {
                     ref.read(signInStateProvider.state).state =
