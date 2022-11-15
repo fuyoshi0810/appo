@@ -1,25 +1,22 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 //担当者：中島
 import 'package:appo/create_account.dart';
 import 'package:appo/create_schedule.dart';
 import 'package:appo/edit_schedule.dart';
 import 'package:appo/schedule_list.dart';
-
 //担当者：藤尾
 import 'package:appo/map.dart';
 import 'package:appo/choice_group.dart';
 import 'package:appo/create_group.dart';
 import 'package:appo/settings_group.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:appo/group_menu.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-
-import 'dart:async';
 
 import 'group_menu.dart';
 
@@ -28,14 +25,6 @@ import 'group_menu.dart';
 // );
 // void main() {
 //   runApp(const MyApp());
-// }
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   runApp(MyApp());
 // }
 
 // Future<void> main() async {
@@ -70,10 +59,8 @@ void main() async {
   /// クラッシュハンドラ(Flutterフレームワーク内でスローされたすべてのエラー)
   // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  /// runApp w/ Riverpod
-  // runApp(const ProviderScope(child: MyApp()));
   runApp(
-    ProviderScope(
+    const ProviderScope(
       child: MyApp(),
     ),
   );
@@ -92,49 +79,50 @@ final userProvider = StateProvider<User?>((ref) => null);
 final userEmailProvider = StateProvider<String>((ref) => 'ログインしていません');
 
 class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      title: 'Counter Firebase',
+      title: 'LoginPage',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       routes: {
-        '/': (context) => LogInPage(),
-        '/c_account': (context) => C_Account(), //アカウント作成画面
-        '/s_list': (context) => S_list(), //スケジュール一覧画面
-        '/c_schedule': (context) => C_Schedule(), //スケジュール作成画面
-        '/e_schedule': (context) => E_Schedule(), //スケジュール編集画面
+        '/': (context) => const LogInPage(), //ログイン画面
+        '/c_account': (context) => const CreateAccount(), //アカウント作成画面
+        '/s_list': (context) => const ScheduleList(), //スケジュール一覧画面
+        '/c_schedule': (context) => CreateSchedule(), //スケジュール作成画面
+        '/e_schedule': (context) => const EditSchedule(), //スケジュール編集画面
+        '/g_menu': (context) => GroupMenu(), //グループ設定画面
         '/s_group': (context) => SettingsGroup(), //グループ設定画面
         '/map': (context) => Map(), //マップ画面
         '/c_group': (context) => CreateGroup(), //グループ作成画面
         '/choice_group': (context) => ChoiceGroup(), //グループ選択画面
-        '/g_menu': (context) => GroupMenu(), //グループ画面
       },
-      // home: const LoginPage(),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-/// MaterialAppの設定
 class LogInPage extends ConsumerStatefulWidget {
   const LogInPage({Key? key}) : super(key: key);
 
   @override
-  _LogInPage createState() => _LogInPage();
+  LogInPageState createState() => LogInPageState();
 }
 
-/// ホーム画面
-class _LogInPage extends ConsumerState<LogInPage> {
-  // const LoginPage({Key? key}) : super(key: key);
+class LogInPageState extends ConsumerState<LogInPage> {
   @override
   void initState() {
     super.initState();
   }
 
   @override
-  // Widget build(BuildContext context, WidgetRef ref) {
   Widget build(BuildContext context) {
     final singInStatus = ref.watch(signInStateProvider);
     final mailController = TextEditingController();
@@ -156,7 +144,7 @@ class _LogInPage extends ConsumerState<LogInPage> {
       body: ListView(
         padding: const EdgeInsets.all(10),
         children: <Widget>[
-          /// ユーザ情報の表示
+          /// ユーザ情報の表示 　　　後で消す
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -195,7 +183,7 @@ class _LogInPage extends ConsumerState<LogInPage> {
           ),
 
           TextButton(
-            child: Text("アカウントを作成"),
+            child: const Text("アカウントを作成"),
             onPressed: () {
               //グループ選択画面へ遷移
               Navigator.pushNamed(context, '/c_account');
@@ -212,19 +200,6 @@ class _LogInPage extends ConsumerState<LogInPage> {
     );
   }
 }
-
-/// Analyticsの実装
-// class AnalyticsService {
-/// ページ遷移のログ
-// Future<void> logPage(String screenName) async {
-// await FirebaseAnalytics.instance.logEvent(
-// name: 'screen_view',
-// parameters: {
-// 'firebase_screen': screenName,
-// },
-// );
-// }
-// }
 
 /// サインイン処理
 void _signIn(
@@ -263,8 +238,7 @@ void _signIn(
 
     /// その他エラー
     else {
-      print('その他のエラー' + e.toString());
-      ref.read(signInStateProvider.state).state = 'サインインエラー';
+      ref.read(signInStateProvider.state).state = 'メールアドレス・パスワードを正しく入力してください';
     }
   }
 }
