@@ -48,6 +48,7 @@ class AuthPageState extends ConsumerState<CreateAccount> {
 
           /// メールアドレス入力
           TextField(
+            keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(
               label: Text('メールアドレス'),
               icon: Icon(Icons.mail),
@@ -98,6 +99,7 @@ class AuthPageState extends ConsumerState<CreateAccount> {
                       'userName': userController.text,
                       'email': mailController.text,
                       'password': passController.text,
+                      'groupList': [],
                       'createdAt': FieldValue.serverTimestamp(),
                       'updatedAt': FieldValue.serverTimestamp(),
                     });

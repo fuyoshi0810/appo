@@ -1,3 +1,5 @@
+import 'package:appo/invite.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,6 +15,7 @@ import 'package:appo/choice_group.dart';
 import 'package:appo/create_group.dart';
 import 'package:appo/settings_group.dart';
 import 'package:appo/group_menu.dart';
+import 'package:appo/invite.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -95,7 +98,10 @@ class MyApp extends ConsumerWidget {
         '/g_menu': (context) => GroupMenu(), //グループ設定画面
         '/s_group': (context) => SettingsGroup(), //グループ設定画面
         '/map': (context) => Map(), //マップ画面
-        '/c_group': (context) => CreateGroup(), //グループ作成画面
+        '/invite': (context) => Invite(), //招待画面
+        '/c_group': (context) => CreateGroup(
+              onSubmit: (String value) {},
+            ), //グループ作成画面
         '/choice_group': (context) => ChoiceGroup(), //グループ選択画面
       },
       localizationsDelegates: const [
@@ -151,6 +157,7 @@ class LogInPageState extends ConsumerState<LogInPage> {
             ],
           ),
           TextField(
+            keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(
               label: Text('メールアドレス'),
               icon: Icon(Icons.mail),
@@ -213,7 +220,8 @@ void _signIn(
     ref.watch(userProvider.state).state = credential.user;
 
     /// 画面に表示
-    ref.read(signInStateProvider.state).state = 'サインインできました!';
+    // ref.read(signInStateProvider.state).state = 'サインインできました!';
+    ref.read(signInStateProvider.state).state = 'サインインまたはアカウントを作成してください';
     Navigator.pushNamed(context, '/choice_group');
   }
 
