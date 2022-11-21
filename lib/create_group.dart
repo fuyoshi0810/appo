@@ -118,23 +118,36 @@ class _CreateGroupState extends State<CreateGroup> {
       widget.onSubmit(groupController.value.text);
 
       if (FirebaseAuth.instance.currentUser != null) {
-        final groupdb = FirebaseFirestore.instance.collection('groups').doc();
         final uid = FirebaseAuth.instance.currentUser!.uid;
+        final groupdb = FirebaseFirestore.instance.collection('groups').doc();
+        final userbd = FirebaseFirestore.instance.collection('users').doc(uid);
+        var userName;
 
         // await FirebaseFirestore.instance.collection('users').doc(uid).update({
         //   'groupList': FieldValue.arrayUnion([groupController.text]),
         //   'updatedAt': FieldValue.serverTimestamp(),
         // });
 
+        await userbd.get().then(
+          (DocumentSnapshot doc) {
+            final data = doc.data() as Map<String, dynamic>;
+
+            userName = data['userName'];
+          },
+          onError: (e) => print("Error getting document: $e"),
+        );
+
         await groupdb.set({
           'admin': [uid],
-          'members': [uid],
+          'members': FieldValue.arrayUnion([
+            {'userId': uid, 'userName': userName + "(管理者)"}
+          ]),
           'groupName': groupController.text,
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         });
 
-        await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        await userbd.update({
           'groupList': FieldValue.arrayUnion([
             {'groupId': groupdb.id, 'groupName': groupController.text}
           ]),

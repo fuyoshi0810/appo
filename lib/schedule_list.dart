@@ -5,6 +5,8 @@ class ScheduleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String g_id = ModalRoute.of(context)?.settings.arguments as String;
+
     var list = [
       "メッセージ1",
       "メッセージ2",
@@ -12,37 +14,35 @@ class ScheduleList extends StatelessWidget {
       "メッセージ4",
       "メッセージ5",
     ];
-    return MaterialApp(
-        home: Scaffold(
-            appBar: AppBar(
-              title: const Text('スケジュール一覧'),
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('スケジュール一覧'),
+        ),
+        // body: Stack(
+        body: Column(
+          children: [
+            Text("予定一覧", style: TextStyle(fontSize: 30)),
+            Flexible(
+              child: ListView.builder(
+                itemCount: 15,
+                itemBuilder: (BuildContext context, int index) {
+                  print("index" + index.toString());
+                  //無限ループ
+                  // if (index >= list.length) {
+                  list.addAll([
+                    "メッセージ${index}",
+                  ]);
+                  // }
+                  return _messageItem(list[index]);
+                },
+              ),
             ),
-            // body: Stack(
-            body: Column(
-              children: [
-                Text("予定一覧", style: TextStyle(fontSize: 30)),
-                Flexible(
-                  child: ListView.builder(
-                    itemCount: 15,
-                    itemBuilder: (BuildContext context, int index) {
-                      print("index" + index.toString());
-                      //無限ループ
-                      // if (index >= list.length) {
-                      list.addAll([
-                        "メッセージ${index}",
-                      ]);
-                      // }
-                      return _messageItem(list[index]);
-                    },
-                  ),
-                ),
-                Align(
-                  child:
-                      ElevatedButton(onPressed: () => {}, child: Text("あああ")),
-                  alignment: Alignment.bottomCenter,
-                ),
-              ],
-            )));
+            Align(
+              child: ElevatedButton(onPressed: () => {}, child: Text("あああ")),
+              alignment: Alignment.bottomCenter,
+            ),
+          ],
+        ));
   }
 
   Widget _messageItem(String title) {

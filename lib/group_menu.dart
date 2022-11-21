@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 class GroupMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    //mapに引数
+    final String g_id = ModalRoute.of(context)?.settings.arguments as String;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('グループ画面'),
@@ -14,7 +17,7 @@ class GroupMenu extends StatelessWidget {
             Text("グループ画面"),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/s_list');
+                  Navigator.pushNamed(context, '/s_list', arguments: g_id);
                 },
                 child: Text("スケジュール一覧")),
             ElevatedButton(
@@ -24,7 +27,7 @@ class GroupMenu extends StatelessWidget {
                 child: Text("マップ")),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/s_group');
+                  Navigator.pushNamed(context, '/s_group', arguments: g_id);
                 },
                 child: Text("メンバー")),
             ElevatedButton(
