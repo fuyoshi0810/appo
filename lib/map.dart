@@ -23,6 +23,8 @@ class _MapBody extends State<Map> {
   late bool _loading;
   bool _searchBoolean = false; //追加
   List<Marker> _markers = <Marker>[];
+  String sublocation = "";
+  String location = "";
 
   Widget _searchTextField() {
     //追加
@@ -76,6 +78,8 @@ class _MapBody extends State<Map> {
         IconButton(
             icon: Icon(Icons.search),
             onPressed: () async {
+              sublocation = "";
+              setState(() {});
               _loading = false;
               Prediction? p = await PlacesAutocomplete.show(
                 apiKey: kGoogleApiKey,
@@ -98,13 +102,21 @@ class _MapBody extends State<Map> {
               );
               PlacesDetailsResponse detail =
                   await _places.getDetailsByPlaceId(p!.placeId.toString());
-
               var placeId = p.placeId;
+              String placeName = p.description.toString();
               double lat = detail.result.geometry!.location.lat;
               double lng = detail.result.geometry!.location.lng;
-
+              final reg = RegExp(
+                  r'[\u3040-\u309F]|\u3000|[\u30A1-\u30FC]|[\u4E00-\u9FFF]');
               print(lat);
               print(lng);
+              print(p.description);
+              Iterable<RegExpMatch> matches = reg.allMatches(placeName);
+              for (final m in matches) {
+                print(m[0]);
+                sublocation += m[0].toString();
+                location = sublocation;
+              }
               LatLng newlatlang = LatLng(lat, lng);
               GoogleMapController controller = await _controller.future;
               controller.animateCamera(CameraUpdate.newCameraPosition(
@@ -116,7 +128,10 @@ class _MapBody extends State<Map> {
               _markers.add(Marker(
                   markerId: MarkerId('SomeId'),
                   position: LatLng(lat, lng),
-                  infoWindow: InfoWindow(title: 'The title of the marker')));
+                  infoWindow: InfoWindow(
+                    title: location,
+                    snippet: p.description,
+                  )));
               setState(() {});
             })
       ]),
