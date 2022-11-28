@@ -43,7 +43,24 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('グループ選択'),
+        title: Text('グループ一覧'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add_alert),
+            tooltip: '招待グループ一覧',
+            onPressed: () {
+              Navigator.pushNamed(context, '/inv_list');
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'ログアウト',
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushNamed(context, '/');
+            },
+          ),
+        ],
       ),
       body: new StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
@@ -53,7 +70,10 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return new Text("Loading!");
+            // return new Text("Loading!");
+            return Center(
+              child: Text("読み込み中…"),
+            );
           }
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');

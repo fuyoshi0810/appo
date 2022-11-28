@@ -142,7 +142,9 @@ class _CreateGroupState extends State<CreateGroup> {
           'members': FieldValue.arrayUnion([
             {'userId': uid, 'userName': userName + "(管理者)"}
           ]),
+          'schedules': FieldValue.arrayUnion([]),
           'groupName': groupController.text,
+          'invList': [],
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         });

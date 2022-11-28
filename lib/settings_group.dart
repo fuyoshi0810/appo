@@ -70,7 +70,8 @@ class SettingsGroup extends StatelessWidget {
                   TextButton(
                     child: Text("招待"),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/invite');
+                      print(g_id);
+                      Navigator.pushNamed(context, '/invite', arguments: g_id);
                     },
                   ),
                   TextButton(

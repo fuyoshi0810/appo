@@ -9,6 +9,7 @@ import 'package:appo/create_account.dart';
 import 'package:appo/create_schedule.dart';
 import 'package:appo/edit_schedule.dart';
 import 'package:appo/schedule_list.dart';
+import 'package:appo/inv_list.dart';
 //担当者：藤尾
 import 'package:appo/map.dart';
 import 'package:appo/choice_group.dart';
@@ -94,13 +95,16 @@ class MyApp extends ConsumerWidget {
       routes: {
         '/': (context) => const LogInPage(), //ログイン画面
         '/c_account': (context) => const CreateAccount(), //アカウント作成画面
-        '/s_list': (context) => const ScheduleList(), //スケジュール一覧画面
+        '/s_list': (context) => ScheduleList(), //スケジュール一覧画面
         '/c_schedule': (context) => CreateSchedule(), //スケジュール作成画面
         '/e_schedule': (context) => const EditSchedule(), //スケジュール編集画面
         '/g_menu': (context) => GroupMenu(), //グループ設定画面
         '/s_group': (context) => SettingsGroup(), //グループ設定画面
         '/map': (context) => Map(), //マップ画面
-        '/invite': (context) => Invite(), //招待画面
+        '/inv_list': (context) => InvList(), //招待されているグループ一覧画面
+        '/invite': (context) => Invite(
+              onSubmit: (String value) {},
+            ), //招待画面
         '/c_group': (context) => CreateGroup(
               onSubmit: (String value) {},
             ), //グループ作成画面
@@ -145,7 +149,9 @@ class LogInPageState extends ConsumerState<LogInPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Homepage'),
+        title: const Text('ログイン画面'),
+        //戻るボタン非表示
+        automaticallyImplyLeading: false,
       ),
       body: ListView(
         padding: const EdgeInsets.all(10),

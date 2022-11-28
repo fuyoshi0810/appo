@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 //firebase;
@@ -91,16 +90,21 @@ class AuthPageState extends ConsumerState<CreateAccount> {
                         .collection('users')
                         .doc(credential.user!.uid)
                         .set({
-                      'userId': DateTime.now().day.toString() +
-                          DateTime.now().hour.toString() +
-                          DateTime.now().second.toString() +
-                          DateTime.now().year.toString().substring(2, 4) +
-                          DateTime.now().minute.toString() +
-                          DateTime.now().month.toString(),
+                      'userId': DateTime.now().day.toString().padLeft(2, '0') +
+                          DateTime.now().hour.toString().padLeft(2, '0') +
+                          DateTime.now().second.toString().padLeft(2, '0') +
+                          DateTime.now()
+                              .year
+                              .toString()
+                              .substring(2, 4)
+                              .padLeft(2, '0') +
+                          DateTime.now().minute.toString().padLeft(2, '0') +
+                          DateTime.now().month.toString().padLeft(2, '0'),
                       'userName': userController.text,
                       'email': mailController.text,
                       'password': passController.text,
                       'groupList': [],
+                      'invList': [],
                       'createdAt': FieldValue.serverTimestamp(),
                       'updatedAt': FieldValue.serverTimestamp(),
                     });
