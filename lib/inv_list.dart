@@ -34,7 +34,7 @@ class _InvListState extends State<InvList> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
+            return const Text("読み込み中…");
           }
 
           List<dynamic> iList = snapshot.data!['invList'];

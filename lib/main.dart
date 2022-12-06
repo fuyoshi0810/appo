@@ -149,7 +149,8 @@ class LogInPageState extends ConsumerState<LogInPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ログイン画面'),
+        centerTitle: true,
+        title: const Text('ログイン'),
         //戻るボタン非表示
         automaticallyImplyLeading: false,
       ),
@@ -183,12 +184,11 @@ class LogInPageState extends ConsumerState<LogInPage> {
             obscureText: true,
           ),
 
-          /// アカウント作成
+          /// ログイン
           Container(
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
-                /// アカウント作成の場合
                 _signIn(ref, mailController.text, passController.text, context);
               },
               child: const Text('ログイン'),
@@ -206,7 +206,9 @@ class LogInPageState extends ConsumerState<LogInPage> {
           /// サインインのメッセージ表示
           Container(
             padding: const EdgeInsets.all(10),
-            child: Text(singInStatus),
+            child: Center(
+              child: Text(singInStatus),
+            ),
           ),
         ],
       ),
@@ -230,6 +232,7 @@ void _signIn(
     /// 画面に表示
     // ref.read(signInStateProvider.state).state = 'サインインできました!';
     ref.read(signInStateProvider.state).state = 'サインインまたはアカウントを作成してください';
+    // ignore: use_build_context_synchronously
     Navigator.pushNamed(context, '/choice_group');
   }
 

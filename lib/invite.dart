@@ -10,6 +10,8 @@ class Invite extends StatefulWidget {
 }
 
 class _InviteState extends State<Invite> {
+  final userdb = FirebaseFirestore.instance.collection('users');
+  final groupdb = FirebaseFirestore.instance.collection('groups');
   final useridController = TextEditingController();
   var invList = [];
   var _text = "招待済み一覧";
@@ -45,17 +47,16 @@ class _InviteState extends State<Invite> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("招待"),
+        centerTitle: true,
+        title: const Text("招待リスト"),
       ),
-      body: new StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('groups')
-            .doc(g_id)
-            .snapshots(), //returns a Stream<DocumentSnapshot>
+      body: StreamBuilder<DocumentSnapshot>(
+        stream:
+            groupdb.doc(g_id).snapshots(), //returns a Stream<DocumentSnapshot>
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: Text("読み込み中…"),
             );
           }
@@ -64,14 +65,14 @@ class _InviteState extends State<Invite> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
+            return const Text("Loading");
           }
           var userDocument = snapshot.data;
           // return new Text(userDocument!["userName"]);
 
-          List<dynamic> vocabulary = snapshot.data!["invList"];
+          List<dynamic> invList = snapshot.data!["invList"];
 
-          if (vocabulary.isEmpty) {
+          if (invList.isEmpty) {
             return Center(
               child: Column(
                 children: [
@@ -98,7 +99,7 @@ class _InviteState extends State<Invite> {
                       Expanded(
                         flex: 1,
                         child: ElevatedButton(
-                          child: Text("検索"),
+                          child: const Text("招待"),
                           onPressed: () {
                             if (useridController.value.text.length == 12) {
                               _submit(g_id);
@@ -111,13 +112,7 @@ class _InviteState extends State<Invite> {
                       ),
                     ],
                   ),
-                  Text("表示可能な情報はありません"),
-                  TextButton(
-                    child: Text("グループ作成"),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/c_group');
-                    },
-                  ),
+                  const Text("招待している人はいません"),
                 ],
               ),
             );
@@ -152,7 +147,7 @@ class _InviteState extends State<Invite> {
                       Expanded(
                         flex: 1,
                         child: ElevatedButton(
-                          child: Text("検索"),
+                          child: const Text("検索"),
                           onPressed: () {
                             if (useridController.value.text.length == 12) {
                               _submit(g_id);
@@ -171,12 +166,12 @@ class _InviteState extends State<Invite> {
                     child: Scrollbar(
                       child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: vocabulary.length,
+                          itemCount: invList.length,
                           itemBuilder: (context, index) {
                             return Row(
                               children: [
                                 Expanded(
-                                    child: Text(vocabulary[index]['userName'])),
+                                    child: Text(invList[index]['userName'])),
                                 Expanded(
                                     child: TextButton(
                                         style: ButtonStyle(
@@ -184,12 +179,10 @@ class _InviteState extends State<Invite> {
                                                 MaterialStateProperty.all<
                                                     Color>(Colors.red)),
                                         onPressed: () {
-                                          delete(
-                                              vocabulary[index]['userId'],
-                                              vocabulary[index]['userName'],
-                                              g_id);
+                                          delete(invList[index]['userId'],
+                                              invList[index]['userName'], g_id);
                                         },
-                                        child: Text("削除")))
+                                        child: const Text("削除")))
                               ],
                             );
                           }),
@@ -295,17 +288,16 @@ class _InviteState extends State<Invite> {
   }
 
   void delete(id, name, g) async {
-    var groupRef =
-        await FirebaseFirestore.instance.collection('groups').doc(g).get();
+    var groupRef = await groupdb.doc(g).get();
     var groupdata =
         groupRef.exists ? groupRef.data() : null; // `data()`で中身を取り出す
-    FirebaseFirestore.instance.collection('users').doc(id).update({
+    userdb.doc(id).update({
       'invList': FieldValue.arrayRemove([
         {'groupId': g, 'groupName': groupdata!['groupName']}
       ])
     });
 
-    FirebaseFirestore.instance.collection('groups').doc(g).update({
+    groupdb.doc(g).update({
       'invList': FieldValue.arrayRemove([
         {'userId': id, 'userName': name}
       ])
@@ -316,13 +308,12 @@ class _InviteState extends State<Invite> {
     if (_errorText == null) {
       widget.onSubmit(useridController.value.text);
 
-      final groupdb = FirebaseFirestore.instance.collection('groups').doc(g);
-      final userbd = FirebaseFirestore.instance.collection('users');
+      final groupdoc = groupdb.doc(g);
       var uDocId = '';
       var uname = 'aaaaaa';
 
       // var invp =
-      await userbd.where('userId', isEqualTo: useridController.text).get().then(
+      await userdb.where('userId', isEqualTo: useridController.text).get().then(
             (QuerySnapshot snapshot) => {
               snapshot.docs.forEach((f) {
                 uDocId = f.reference.id;
@@ -339,26 +330,26 @@ class _InviteState extends State<Invite> {
         print('nullじゃない');
       }
 
-      var groupRef = await groupdb.get();
+      var groupRef = await groupdoc.get();
       var groupdata =
           groupRef.exists ? groupRef.data() : null; // `data()`で中身を取り出す
       print("グループ名" + groupdata!['groupName']);
 
-      await userbd.doc(uDocId).update({
+      await userdb.doc(uDocId).update({
         'invList': FieldValue.arrayUnion([
-          {'groupId': g, 'groupName': groupdata!['groupName']}
+          {'groupId': g, 'groupName': groupdata['groupName']}
         ]),
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      await groupdb.update({
+      await groupdoc.update({
         'invList': FieldValue.arrayUnion([
           {'userId': uDocId, 'userName': uname}
         ]),
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      await groupdb.get().then(
+      await groupdoc.get().then(
         (DocumentSnapshot doc) {
           final data = doc.data() as Map<String, dynamic>;
           invList = data['invList'];

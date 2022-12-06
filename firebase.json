@@ -12,6 +12,16 @@
         ".git",
         "firebase-debug.log",
         "firebase-debug.*.log"
+      ]
+    },
+    {
+      "source": "test",
+      "codebase": "test",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
       ],
       "predeploy": [
         "npm --prefix \"$RESOURCE_DIR\" run lint"
@@ -24,12 +34,6 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   },
   "storage": {

@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SettingsGroup extends StatelessWidget {
+  const SettingsGroup({super.key});
+
   @override
   Widget build(BuildContext context) {
     final String g_id = ModalRoute.of(context)?.settings.arguments as String;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("メンバー一覧"),
+        centerTitle: true,
+        title: const Text("メンバー一覧"),
       ),
-      body: new StreamBuilder<DocumentSnapshot>(
+      body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('groups')
             .doc(g_id)
@@ -18,14 +21,14 @@ class SettingsGroup extends StatelessWidget {
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return new Text("Loading!");
+            return const Text("読み込み中…");
           }
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
+            return const Text("読み込み中…");
           }
           var userDocument = snapshot.data;
 
@@ -35,9 +38,9 @@ class SettingsGroup extends StatelessWidget {
             return Center(
               child: Column(
                 children: [
-                  Text("表示可能なグループはありません"),
+                  const Text("表示可能なグループはありません"),
                   TextButton(
-                    child: Text("グループ作成"),
+                    child: const Text("グループ作成"),
                     onPressed: () {
                       Navigator.pushNamed(context, '/c_group');
                     },
@@ -68,14 +71,14 @@ class SettingsGroup extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    child: Text("招待"),
+                    child: const Text("招待"),
                     onPressed: () {
                       print(g_id);
                       Navigator.pushNamed(context, '/invite', arguments: g_id);
                     },
                   ),
                   TextButton(
-                    child: Text("解散"),
+                    child: const Text("解散"),
                     onPressed: () {
                       Navigator.pushNamed(context, '/invite');
                     },

@@ -33,6 +33,7 @@ class AuthPageState extends ConsumerState<CreateAccount> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('アカウント作成'),
       ),
       body: ListView(
@@ -143,23 +144,12 @@ class AuthPageState extends ConsumerState<CreateAccount> {
           /// サインインのメッセージ表示
           Container(
             padding: const EdgeInsets.all(10),
-            child: Text(singInStatus),
+            child: Center(
+              child: Text(singInStatus),
+            ),
           ),
-
-          /// サインアウト
-          TextButton(
-              onPressed: () {
-                _signOut(ref);
-              },
-              child: const Text('SIGN OUT'))
         ],
       ),
     );
   }
-}
-
-/// サインアウト
-void _signOut(WidgetRef ref) async {
-  await FirebaseAuth.instance.signOut();
-  ref.read(signInStateProvider.state).state = 'サインインまたはアカウントを作成してください';
 }

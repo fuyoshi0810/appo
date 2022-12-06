@@ -135,25 +135,26 @@ class _MapBody extends State<Map> {
               setState(() {});
             })
       ]),
-      drawer: Drawer(
-          child: ListView(
-        children: [
-          DrawerHeader(
-              decoration: BoxDecoration(color: Colors.yellowAccent),
-              child: Text("各画面遷移")),
-          ListTile(
-            title: Text("スケジュール一覧"),
-            onTap: () {
-              Navigator.pushNamed(context, '/s_list');
-            },
-          ),
-          ListTile(
-              title: Text("退出"),
-              onTap: () {
-                Navigator.pushNamed(context, '/g_menu');
-              }),
-        ],
-      )),
+      //ハンバーガーメニュー
+      // drawer: Drawer(
+      //     child: ListView(
+      //   children: [
+      //     DrawerHeader(
+      //         decoration: BoxDecoration(color: Colors.yellowAccent),
+      //         child: Text("各画面遷移")),
+      //     ListTile(
+      //       title: Text("スケジュール一覧"),
+      //       onTap: () {
+      //         Navigator.pushNamed(context, '/s_list');
+      //       },
+      //     ),
+      //     ListTile(
+      //         title: Text("退出"),
+      //         onTap: () {
+      //           Navigator.pushNamed(context, '/g_menu');
+      //         }),
+      //   ],
+      // )),
       body: _loading
           ? const CircularProgressIndicator()
           : SafeArea(

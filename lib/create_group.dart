@@ -14,6 +14,7 @@ class _CreateGroupState extends State<CreateGroup> {
   final groupController = TextEditingController();
   final useridController = TextEditingController();
   var members = [];
+  // ignore: prefer_final_fields
   var _text = '';
 
   @override
@@ -44,7 +45,8 @@ class _CreateGroupState extends State<CreateGroup> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("グループ作成"),
+        centerTitle: true,
+        title: const Text("グループ作成"),
       ),
       body: Center(
         child: Column(
@@ -102,8 +104,8 @@ class _CreateGroupState extends State<CreateGroup> {
             //           }))
             // ]),
             ElevatedButton(
-              child: Text("グループ作成"),
               onPressed: groupController.value.text.isNotEmpty ? _submit : null,
+              child: const Text("グループ作成"),
             ),
           ],
         ),

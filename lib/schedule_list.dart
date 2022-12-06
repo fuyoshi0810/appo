@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ScheduleList extends StatefulWidget {
-  // const ScheduleList({super.key});
+  const ScheduleList({super.key});
+
   @override
   State<ScheduleList> createState() => _ScheduleListState();
 }
@@ -19,36 +20,43 @@ class _ScheduleListState extends State<ScheduleList> {
     final schedb = FirebaseFirestore.instance.collection('schedules');
     var uname;
     return Scaffold(
-      appBar: AppBar(),
-      body: new StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('groups')
-            .doc(g_id)
-            .snapshots(),
+      appBar: AppBar(
+        title: const Text("予定一覧"),
+      ),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: groupdb.doc(g_id).snapshots(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return new Text("読み込み中…");
+            return const Text("読み込み中…");
           }
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
+            return const Text("読み込み中…");
           }
           var userDocument = snapshot.data;
 
           List<dynamic> sList = snapshot.data!['schedules'];
-
+          print("タイムスタンプ" + snapshot.data!['updatedAt'].toString());
+          print("タイムスタンプ2! " + snapshot.data!['updatedAt'].seconds.toString());
+          print("タイムスタンプ2! " + snapshot.data!['updatedAt'].toDate().toString());
+          // タイムスタンプTimestamp(seconds=1669250838, nanoseconds=224000000)
+          // タイムスタンプ2! 1669250838
           if (sList.isEmpty) {
             return Center(
               child: Column(
                 children: [
-                  Text("予定はありません"),
+                  const SizedBox(
+                    height: 500,
+                    child: Text("予定はありません"),
+                  ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/c_schedule');
+                      Navigator.pushNamed(context, '/c_schedule',
+                          arguments: g_id);
                     },
                     child: const Text("スケジュール作成"),
                   ),
@@ -64,7 +72,6 @@ class _ScheduleListState extends State<ScheduleList> {
                 // height: 500,
                 child: Column(
                   children: [
-                    Text("予定一覧"),
                     SizedBox(
                       height: 500,
                       child: Scrollbar(
@@ -84,7 +91,8 @@ class _ScheduleListState extends State<ScheduleList> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/c_schedule');
+                        Navigator.pushNamed(context, '/c_schedule',
+                            arguments: g_id);
                       },
                       child: const Text("スケジュール作成"),
                     ),
