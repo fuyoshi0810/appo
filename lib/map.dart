@@ -62,6 +62,11 @@ class _MapBody extends State<Map> {
   }
 
   void _getUserLocation() async {
+    _markers.add(Marker(
+        markerId: MarkerId('friend'),
+        position: LatLng(34.70777987160735, 135.50332656931315),
+        infoWindow:
+            InfoWindow(title: "友達の現在位置", snippet: " 大阪府大阪市北区中崎西２丁目６−１１")));
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
