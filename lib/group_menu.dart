@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_webservice/directions.dart';
 
 class GroupMenu extends StatelessWidget {
   const GroupMenu({super.key});
@@ -41,7 +42,11 @@ class GroupMenu extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/map');
+                    Navigator.pushNamed(context, '/map', arguments: g_id);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => Map("g_id": g_id)),
+                    // );
                   },
                   child: const Text("マップ")),
             ),

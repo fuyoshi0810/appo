@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
@@ -45,6 +46,7 @@ class CreateScheduleState extends State<CreateSchedule> {
   List<Marker> _markers = <Marker>[];
   String sublocation = "";
   String location = "";
+  final scheduleController = TextEditingController();
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -63,6 +65,18 @@ class CreateScheduleState extends State<CreateSchedule> {
     date = DateTime.now().millisecondsSinceEpoch;
     _loading = true;
     _getUserLocation();
+  }
+
+  String? get _errorText {
+    // at any time, we can get the text from _controller.value.text
+    final text = scheduleController.value.text;
+    // Note: you can do your own custom validation here
+    // Move this logic this outside the widget for more testable code
+    if (text.isEmpty) {
+      return '1文字から10文字の間で入力してください';
+    }
+    // return null if the text is valid
+    return null;
   }
 
   _datePicker(BuildContext context) async {
@@ -143,10 +157,11 @@ class CreateScheduleState extends State<CreateSchedule> {
 
   @override
   Widget build(BuildContext context) {
-    final scheduleController = TextEditingController();
     final String g_id = ModalRoute.of(context)?.settings.arguments as String;
+    final uid = FirebaseAuth.instance.currentUser!.uid;
     final schedb = FirebaseFirestore.instance.collection('schedules');
     final groupdb = FirebaseFirestore.instance.collection('groups');
+    final userdb = FirebaseFirestore.instance.collection('users');
 
     // return Scaffold(
     //   appBar: AppBar(),
@@ -190,8 +205,9 @@ class CreateScheduleState extends State<CreateSchedule> {
             children: <Widget>[
               // Text(DateTime.now().toString()),
               TextField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   label: Text('スケジュール名'),
+                  errorText: _errorText,
                 ),
                 controller: scheduleController,
               ),
@@ -408,41 +424,89 @@ class CreateScheduleState extends State<CreateSchedule> {
               //       );
               //     }),
               ElevatedButton(
-                onPressed: () async {
-                  print("データフォーマット＋ｄタイム" +
-                      dateFormat.toString() +
-                      dTime.toString());
-                  print("date======" + date.toString());
-
-                  // await schedb
-                  //     .doc(scheduleController.text + date.toString())
-                  //     .set({
-                  //   "scheduleName": scheduleController.text,
-                  //   "meetingTime": date,
-                  //   "meetingPlace": [lat, lng],
-                  //   // "participant": [],
-                  //   "updatedAt": FieldValue.serverTimestamp(),
-                  // });
-
-                  // await groupdb.doc(scheduleController.text).update({
-                  //   "schedules": FieldValue.arrayUnion([
-                  //     {
-                  //       "scheduleName": scheduleController.text,
-                  //       "meetingTime": date,
-                  //       "meetingPlace": [lat, lng],
-                  //       // "participant": {あ},
-                  //       "updatedAt": FieldValue.serverTimestamp(),
-                  //     },
-                  //   ]),
-                  // });
-                  Navigator.pushNamed(context, '/s_list', arguments: g_id);
+                onPressed: () {
+                  if (scheduleController.value.text.isNotEmpty) {
+                    _submit(g_id);
+                  } else {
+                    print("null登録失敗");
+                    null;
+                  }
                 },
                 child: const Text("スケジュール保存"),
               ),
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     print("データフォーマット＋ｄタイム" +
+              //         dateFormat.toString() +
+              //         dTime.toString());
+              //     print("date======" + date.toString());
+
+              //     // await schedb
+              //     //     .doc(scheduleController.text + date.toString())
+              //     //     .set({
+              //     //   "scheduleName": scheduleController.text,
+              //     //   "meetingTime": date,
+              //     //   "meetingPlace": [lat, lng],
+              //     //   // "participant": [],
+              //     //   "updatedAt": FieldValue.serverTimestamp(),
+              //     // });
+
+              //     await groupdb.doc(g_id).update({
+              //       "schedules": FieldValue.arrayUnion([
+              //         {
+              //           "scheduleName": scheduleController.text,
+              //           "meetingTime": date,
+              //           "meetingPlace": [lat, lng],
+              //           // "participant": {あ},
+              //           "updatedAt": FieldValue.serverTimestamp(),
+              //         },
+              //       ]),
+              //     });
+              //     // await userdb.doc(uid).update({
+              //     //   "lat": lat,
+              //     //   "lng": lng,
+              //     // });
+              //     Navigator.pushNamed(context, '/s_list', arguments: g_id);
+              //   },
+              //   child: const Text("スケジュール保存"),
+              // ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _submit(g_id) async {
+    // if there is no error text
+    if (_errorText == null) {
+      // notify the parent widget via the onSubmit callback
+      // widget.onSubmit(groupController.value.text);
+
+      if (FirebaseAuth.instance.currentUser != null) {
+        final uid = FirebaseAuth.instance.currentUser!.uid;
+        // final groupdb = FirebaseFirestore.instance.collection('groups');
+        // final userbd = FirebaseFirestore.instance.collection('users').doc(uid);
+        var userName;
+
+        await groupdb.doc(g_id).update({
+          "schedules": FieldValue.arrayUnion([
+            {
+              "scheduleName": scheduleController.text,
+              "meetingTime": date,
+              "meetingPlace": [lat, lng],
+              // "participant": {あ},
+              // "updatedAt": FieldValue.serverTimestamp(),
+            },
+          ]),
+        });
+        // await userdb.doc(uid).update({
+        //   "lat": lat,
+        //   "lng": lng,
+        // });
+        Navigator.pushNamed(context, '/s_list', arguments: g_id);
+      }
+    }
+    print("登録失敗");
   }
 }

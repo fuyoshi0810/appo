@@ -142,7 +142,12 @@ class _CreateGroupState extends State<CreateGroup> {
         await groupdb.set({
           'admin': [uid],
           'members': FieldValue.arrayUnion([
-            {'userId': uid, 'userName': userName + "(管理者)"}
+            {
+              'userId': uid,
+              'userName': userName + "(管理者)",
+              "lat": "",
+              "lng": ""
+            }
           ]),
           'schedules': FieldValue.arrayUnion([]),
           'groupName': groupController.text,

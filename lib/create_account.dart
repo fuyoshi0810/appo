@@ -106,6 +106,8 @@ class AuthPageState extends ConsumerState<CreateAccount> {
                       'password': passController.text,
                       'groupList': [],
                       'invList': [],
+                      'lat': '',
+                      'lng': '',
                       'createdAt': FieldValue.serverTimestamp(),
                       'updatedAt': FieldValue.serverTimestamp(),
                     });

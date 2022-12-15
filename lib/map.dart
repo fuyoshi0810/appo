@@ -6,16 +6,23 @@ import 'dart:math';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 const kGoogleApiKey = "AIzaSyD_HBnp6ybK_wylg-CSbGTMnh5AQvxEiX0";
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
 class Map extends StatefulWidget {
+  // 画面遷移元からのデータを受け取る変数
+  // final String g_id;
+  // const Map({super.key, required this.g_id});
+
   @override
   _MapBody createState() => _MapBody();
 }
 
 class _MapBody extends State<Map> {
+  // 状態を管理する変数
+  // late String state;
   Completer<GoogleMapController> _controller = Completer();
   //list of markers
 
@@ -25,6 +32,7 @@ class _MapBody extends State<Map> {
   List<Marker> _markers = <Marker>[];
   String sublocation = "";
   String location = "";
+  final groupdb = FirebaseFirestore.instance.collection('groups');
 
   Widget _searchTextField() {
     //追加
@@ -59,6 +67,8 @@ class _MapBody extends State<Map> {
     super.initState();
     _loading = true;
     _getUserLocation();
+    // 受け取ったデータを状態を管理する変数に格納
+    // state = widget.g_id;
   }
 
   void _getUserLocation() async {
@@ -73,6 +83,45 @@ class _MapBody extends State<Map> {
 
   @override
   Widget build(BuildContext context) {
+    final String g_id = ModalRoute.of(context)?.settings.arguments as String;
+    final groupdb = FirebaseFirestore.instance.collection('groups');
+    var glat;
+    var glng;
+    var testlist = [];
+    var glatlist = [];
+    var glnglist = [];
+    void getUserLocation() {
+      groupdb.doc(g_id).snapshots().listen(
+        (event) {
+          print("current data: ${event.data()}");
+          var aaa = event.data()!['schedules'];
+          for (var b in aaa) {
+            testlist = b['meetingPlace'];
+          }
+          var c = aaa[0];
+          print(c);
+          for (int i = 0; i < aaa.length; i++) {
+            if (c['meetingTime'] > aaa[i]['meetingTime']) {
+              c = aaa[i];
+            }
+            print("いい");
+            // print("${i}個目" + aaa[i]);
+          }
+          print("ああ");
+          print(c['meetingPlace']);
+          glat = c['meetingPlace'][0];
+          glng = c['meetingPlace'][1];
+          print("メンバーの位置" + event.data()!['members'].toString());
+          for (var a in event.data()!['members']) {
+            glatlist.add(a['lat']);
+            glnglist.add(a['lng']);
+            print("メンバー" + a['lat']);
+          }
+        },
+        onError: (error) => print("Listen failed: $error"),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text("検索欄"), actions: [
         IconButton(
@@ -100,6 +149,7 @@ class _MapBody extends State<Map> {
                 ),
                 components: [Component(Component.country, "jp")],
               );
+              //nullチェックしてないから値入れずに検索するとエラー
               PlacesDetailsResponse detail =
                   await _places.getDetailsByPlaceId(p!.placeId.toString());
               var placeId = p.placeId;
@@ -133,6 +183,49 @@ class _MapBody extends State<Map> {
                     snippet: p.description,
                   )));
               setState(() {});
+            }),
+        IconButton(
+            icon: Icon(Icons.update),
+            onPressed: () async {
+              _loading = true;
+              getUserLocation();
+              Future.delayed(Duration(seconds: 5), () async {
+                _markers.add(Marker(
+                    markerId: MarkerId('goal'),
+                    position: LatLng(glat, glng),
+                    infoWindow: InfoWindow(
+                      title: location,
+                      snippet: "仮置き",
+                    )));
+                Position position = await Geolocator.getCurrentPosition(
+                    desiredAccuracy: LocationAccuracy.high);
+                setState(() {
+                  _initialPosition =
+                      LatLng(position.latitude, position.longitude);
+                  _loading = false;
+                  print(position);
+                });
+              });
+
+              Future.delayed(Duration(seconds: 5), () async {
+                for (int i = 0; i > glatlist.length; i++) {
+                  _markers.add(Marker(
+                      markerId: MarkerId(i.toString()),
+                      position: LatLng(glatlist[i], glnglist[i]),
+                      infoWindow: InfoWindow(
+                        title: location,
+                        snippet: "仮置き",
+                      )));
+                  Position position = await Geolocator.getCurrentPosition(
+                      desiredAccuracy: LocationAccuracy.high);
+                  setState(() {
+                    _initialPosition =
+                        LatLng(position.latitude, position.longitude);
+                    _loading = false;
+                    print(position);
+                  });
+                }
+              });
             })
       ]),
       //ハンバーガーメニュー

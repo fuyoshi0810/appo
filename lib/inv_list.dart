@@ -124,7 +124,7 @@ class _InvListState extends State<InvList> {
     // await FirebaseFirestore.instance.collection('groups').doc(gid).update({
     await groupdb.doc(gid).update({
       'members': FieldValue.arrayUnion([
-        {'userId': uid, 'userName': uname}
+        {'userId': uid, 'userName': uname, "lat": "", "lng": ""}
       ]),
       'invList': FieldValue.arrayRemove([
         {'userId': uid, 'userName': uname}
