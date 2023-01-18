@@ -63,6 +63,15 @@ class GroupMenu extends StatelessWidget {
                   },
                   child: const Text("グループから抜ける")),
             ),
+            SizedBox(
+              width: 200,
+              height: 50,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/test");
+                  },
+                  child: const Text("バックグラウンドtest")),
+            ),
           ],
         ),
       ),

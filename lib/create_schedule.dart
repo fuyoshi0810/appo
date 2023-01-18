@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'dart:async';
 import 'package:google_maps_webservice/places.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' as gl;
 
 // import 'package:cloud_functions/cloud_functions.dart';
 // final functions = FirebaseFunctions.instance;
@@ -94,8 +94,7 @@ class CreateScheduleState extends State<CreateSchedule> {
   }
 
   void _getUserLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    gl.Position position = await gl.Geolocator.getCurrentPosition();
     setState(() {
       _initialPosition = LatLng(position.latitude, position.longitude);
       _loading = false;
