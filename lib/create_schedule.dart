@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -39,7 +40,12 @@ class CreateScheduleState extends State<CreateSchedule> {
   dynamic dTime;
   dynamic dateFormat;
   dynamic date;
-  late double lat;
+  dynamic ayear;
+  dynamic amonth;
+  dynamic aday;
+  dynamic milibyou;
+  dynamic zifun = TimeOfDay(hour: 00, minute: 00);
+  late double lat = 0;
   late double lng;
   late LatLng _initialPosition;
   late bool _loading;
@@ -63,6 +69,18 @@ class CreateScheduleState extends State<CreateSchedule> {
     dateFormat = DateFormat("yyyy年MM月dd日").format(dateTime);
     dTime = TimeOfDay.now();
     date = DateTime.now().millisecondsSinceEpoch;
+    ayear = DateTime.now().year;
+    amonth = DateTime.now().month;
+    aday = DateTime.now().day;
+    milibyou = DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+      dateTime.hour,
+      dateTime.minute,
+    );
+    zifun = TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+    print("最初のdate" + date.toString());
     _loading = true;
     _getUserLocation();
   }
@@ -91,6 +109,9 @@ class CreateScheduleState extends State<CreateSchedule> {
       setState(() {
         dateFormat = DateFormat("yyyy年MM月dd日").format(datePicked);
         date = datePicked.millisecondsSinceEpoch;
+        ayear = datePicked.year;
+        amonth = datePicked.month;
+        aday = datePicked.day;
       });
     }
   }
@@ -103,8 +124,21 @@ class CreateScheduleState extends State<CreateSchedule> {
     if (timePicked != null && timePicked != dTime) {
       setState(() {
         dTime = timePicked;
+        zifun = timePicked;
+        // zifun = zifun.hour.toString() + zifun.minute.toString();
+        // zifun.millisecondsSinceEpoch;
+
+        print("時間分" + zifun.toString());
+        // print(zifun.hour.toString());
       });
     }
+  }
+
+  _saveTime(String key, String value) async {
+    var prefs = await SharedPreferences.getInstance();
+    print("ぷれふ" + prefs.toString());
+    prefs.setString(key, value);
+    print("ぷれふ" + prefs.toString());
   }
 
   void _getUserLocation() async {
@@ -162,36 +196,6 @@ class CreateScheduleState extends State<CreateSchedule> {
     final schedb = FirebaseFirestore.instance.collection('schedules');
     final groupdb = FirebaseFirestore.instance.collection('groups');
     final userdb = FirebaseFirestore.instance.collection('users');
-
-    // return Scaffold(
-    //   appBar: AppBar(),
-    //   body: Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: <Widget>[
-    //         Text(
-    //           'DateTime:${_dateTime.toLocal().toString()}',
-    //           style: Theme.of(context).textTheme.headline4,
-    //         ),
-    //         ElevatedButton(
-    //           child: Text('set Date'),
-    //           onPressed: _selectDate,
-    //         ),
-    //         ElevatedButton(
-    //           child: Text('set Time'),
-    //           onPressed: _selectTime,
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    //   floatingActionButton: FloatingActionButton(
-    //     onPressed: () {
-    //       _sendTime(_dateTime.toUtc().millisecondsSinceEpoch ~/ 1000);
-    //     },
-    //     tooltip: 'send to Firestore via Cloud Functions',
-    //     child: const Icon(Icons.add),
-    //   ), // This trailing comma makes auto-formatting nicer for build methods.
-    // );
 
     return Scaffold(
       appBar: AppBar(
@@ -343,89 +347,27 @@ class CreateScheduleState extends State<CreateSchedule> {
                             ],
                           ),
                         )),
-              // SizedBox(),
-              // StreamBuilder<DocumentSnapshot>(
-              //     // body: new StreamBuilder<DocumentSnapshot>(
-              //     stream:
-              //         // FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
-              //         groupdb.doc(g_id).snapshots(),
-              //     builder: (BuildContext context,
-              //         AsyncSnapshot<DocumentSnapshot> snapshot) {
-              //       if (!snapshot.hasData) {
-              //         return const Text("読み込み中…");
-              //       }
-              //       if (snapshot.hasError) {
-              //         return Text('Error: ${snapshot.error}');
-              //       }
-
-              //       if (snapshot.connectionState == ConnectionState.waiting) {
-              //         return const Text("Loading");
-              //       }
-
-              //       List<dynamic> mList = snapshot.data!['members'];
-              //       var _isChecked = List.filled(mList.length, false);
-
-              //       return SizedBox(
-              //         height: 300,
-              //         child: SingleChildScrollView(
-              //           child: Column(children: [
-              //             const Text("グループメンバー"),
-              //             SizedBox(
-              //               height: 500,
-              //               child: Scrollbar(
-              //                 child: ListView.builder(
-              //                     shrinkWrap: true,
-              //                     itemCount: mList.length,
-              //                     itemBuilder: (context, index) {
-              //                       // return CheckboxListTile(
-              //                       //   title: Text(
-              //                       //       mList[index]['userName'].toString()),
-              //                       //   value: _isChecked[index],
-              //                       //   // onChanged: (bool? value) {
-              //                       //   onChanged: (bool? value) {
-              //                       //     setState(() {
-              //                       //       _isChecked[index] = value!;
-              //                       //     });
-              //                       //   },
-              //                       //   controlAffinity:
-              //                       //       ListTileControlAffinity.leading,
-              //                       // );
-              //                       return Row(
-              //                         children: [
-              //                           Expanded(
-              //                             // child: Text(mList[index]['userName']),
-              //                             child: ListTile(
-              //                               title: Text(mList[index]['userName']
-              //                                   .toString()),
-              //                               selected: _index == index,
-              //                               onTap: () {
-              //                                 _index = index;
-              //                                 print(_index.toString() +
-              //                                     "を選択しました");
-              //                               },
-              //                             ),
-              //                           ),
-              //                           Expanded(
-              //                             child: TextButton(
-              //                                 style: ButtonStyle(
-              //                                     foregroundColor:
-              //                                         MaterialStateProperty.all<
-              //                                             Color>(Colors.blue)),
-              //                                 onPressed: () {},
-              //                                 child: Text(check)),
-              //                           ),
-              //                         ],
-              //                       );
-              //                     }),
-              //               ),
-              //             )
-              //           ]),
-              //         ),
-              //       );
-              //     }),
               ElevatedButton(
                 onPressed: () {
-                  if (scheduleController.value.text.isNotEmpty) {
+                  if (scheduleController.value.text.isNotEmpty && lat != 0) {
+                    print("登録成功");
+                    milibyou =
+                        DateTime(ayear, amonth, aday, zifun.hour, zifun.minute);
+                    print(milibyou.toString());
+                    print(milibyou.millisecondsSinceEpoch);
+                    // setState(() {
+                    //   _saveTime(
+                    //       'time',
+                    //       DateTime(
+                    //         ayear, //DateTime
+                    //         amonth, //DateTime
+                    //         aday, //DateTime
+                    //         zifun.hour, // TimeOfDay
+                    //         zifun.minute, //TimeOfDay
+                    //       ).toString());
+                    //   // これで　2022-06-22 10:00:00.000　こんな感じになる
+                    // });
+
                     _submit(g_id);
                   } else {
                     print("null登録失敗");
@@ -489,24 +431,42 @@ class CreateScheduleState extends State<CreateSchedule> {
         // final userbd = FirebaseFirestore.instance.collection('users').doc(uid);
         var userName;
 
-        await groupdb.doc(g_id).update({
-          "schedules": FieldValue.arrayUnion([
-            {
-              "scheduleName": scheduleController.text,
-              "meetingTime": date,
-              "meetingPlace": [lat, lng],
-              // "participant": {あ},
-              // "updatedAt": FieldValue.serverTimestamp(),
-            },
-          ]),
+        // await groupdb.doc(g_id).update({
+        //   "schedules": FieldValue.arrayUnion([
+        //     {
+        //       "scheduleName": scheduleController.text,
+        //       "meetingTime": milibyou.millisecondsSinceEpoch,
+        //       "meetingPlace": [lat, lng],
+        //       //仮置き
+        //       "scheduleId": DateTime.now().toString(),
+        //       // "participant": {あ},
+        //       // "updatedAt": FieldValue.serverTimestamp(),
+        //     },
+        //   ]),
+        // });
+
+        await groupdb
+            .doc(g_id)
+            .collection('schedules')
+            .doc(DateTime.now().toString())
+            .set({
+          "scheduleName": scheduleController.text,
+          "meetingTime": milibyou.millisecondsSinceEpoch,
+          "meetingPlace": [lat, lng],
+          //仮置き
+          "scheduleId": DateTime.now().toString(),
+          // "participant": {あ},
+          // "updatedAt": FieldValue.serverTimestamp(),
         });
+
         // await userdb.doc(uid).update({
         //   "lat": lat,
         //   "lng": lng,
         // });
         Navigator.pushNamed(context, '/s_list', arguments: g_id);
       }
+    } else {
+      print("登録失敗");
     }
-    print("登録失敗");
   }
 }

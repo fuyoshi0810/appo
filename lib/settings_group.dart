@@ -80,7 +80,7 @@ class SettingsGroup extends StatelessWidget {
                   TextButton(
                     child: const Text("解散"),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/invite');
+                      // Navigator.pushNamed(context, '/invite');
                     },
                   ),
                 ],

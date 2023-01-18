@@ -37,6 +37,7 @@ dependencies:
   flutter_hooks: ^0.18.0
   hooks_riverpod: ^2.0.0-dev.9
   material_floating_search_bar: ^0.3.7
+  shared_preferences: ^2.0.15
 
 
   # The following adds the Cupertino Icons font to your application.

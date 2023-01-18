@@ -39,11 +39,13 @@ class _InvListState extends State<InvList> {
 
           List<dynamic> iList = snapshot.data!['invList'];
           uname = snapshot.data!['userName'];
+          var userID = snapshot.data!['userId'].toString();
 
           if (iList.isEmpty) {
             return Center(
               child: Column(
-                children: const [
+                children: [
+                  Text("自分のID:" + userID),
                   Text("招待されているグループはありません"),
                 ],
               ),
@@ -53,6 +55,7 @@ class _InvListState extends State<InvList> {
               height: 600,
               child: SingleChildScrollView(
                 child: Column(children: [
+                  Text("自分のID:" + snapshot.data!['userId']),
                   const Text("招待されているグループ一覧"),
                   SizedBox(
                     height: 500,
