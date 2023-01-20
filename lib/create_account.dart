@@ -8,20 +8,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //アカウント登録の文字変更してない
 
 /// Authのサインイン状態のprovider
-final signInStateProvider = StateProvider((ref) => 'アカウントを作成してください');
+// final signInStateProvider = StateProvider((ref) => 'アカウントを作成してください');
 
 /// サインインユーザーの情報プロバイダー
-final userProvider = StateProvider<User?>((ref) => null);
+// final userProvider = StateProvider<User?>((ref) => null);
 
 /// ページ設定
-class CreateAccount extends ConsumerStatefulWidget {
+class CreateAccount extends StatefulWidget {
   const CreateAccount({Key? key}) : super(key: key);
 
   @override
   AuthPageState createState() => AuthPageState();
 }
 
-class AuthPageState extends ConsumerState<CreateAccount> {
+class AuthPageState extends State<CreateAccount> {
   @override
   void initState() {
     super.initState();
@@ -29,7 +29,7 @@ class AuthPageState extends ConsumerState<CreateAccount> {
 
   @override
   Widget build(BuildContext context) {
-    final singInStatus = ref.watch(signInStateProvider);
+    // final singInStatus = ref.watch(signInStateProvider);
     final userController = TextEditingController();
     final mailController = TextEditingController();
     final passController = TextEditingController();
@@ -85,10 +85,10 @@ class AuthPageState extends ConsumerState<CreateAccount> {
                     );
 
                     /// ユーザ情報の更新
-                    ref.watch(userProvider.state).state = credential.user;
+                    // ref.watch(userProvider.state).state = credential.user;
 
                     /// 画面に表示
-                    ref.read(signInStateProvider.state).state = 'アカウント登録完了';
+                    // ref.read(signInStateProvider.state).state = 'アカウント登録完了';
 
                     await FirebaseFirestore.instance
                         .collection('users')
@@ -124,8 +124,8 @@ class AuthPageState extends ConsumerState<CreateAccount> {
                     // );
                     Navigator.pop(context);
                   } else {
-                    ref.read(signInStateProvider.state).state =
-                        'ユーザー名を入力してください';
+                    // ref.read(signInStateProvider.state).state =
+                    // 'ユーザー名を入力してください';
                   }
                 }
 
@@ -133,19 +133,34 @@ class AuthPageState extends ConsumerState<CreateAccount> {
                 on FirebaseAuthException catch (e) {
                   /// パスワードが弱い場合
                   if (e.code == 'weak-password') {
-                    ref.read(signInStateProvider.state).state =
-                        'パスワードが弱いです(6文字以上)';
+                    // ref.read(signInStateProvider.state).state =
+                    // 'パスワードが弱いです(6文字以上)';
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('パスワードが弱いです(6文字以上)'),
+                      ),
+                    );
 
                     /// メールアドレスが既に使用中の場合
                   } else if (e.code == 'email-already-in-use') {
-                    ref.read(signInStateProvider.state).state =
-                        'すでに使用されているメールアドレスです';
+                    // ref.read(signInStateProvider.state).state =
+                    // 'すでに使用されているメールアドレスです';
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('すでに使用されているメールアドレスです'),
+                      ),
+                    );
                   }
 
                   /// その他エラー
                   else {
-                    ref.read(signInStateProvider.state).state =
-                        'ユーザー名・メールアドレス・パスワードを正しく入力してください';
+                    // ref.read(signInStateProvider.state).state =
+                    // 'ユーザー名・メールアドレス・パスワードを正しく入力してください';
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('ユーザー名・メールアドレス・パスワードを正しく入力してください'),
+                      ),
+                    );
                   }
                 } catch (e) {
                   debugPrint(e.toString());
@@ -156,12 +171,12 @@ class AuthPageState extends ConsumerState<CreateAccount> {
           ),
 
           /// サインインのメッセージ表示
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: Center(
-              child: Text(singInStatus),
-            ),
-          ),
+          // Container(
+          //   padding: const EdgeInsets.all(10),
+          //   child: Center(
+          //     child: Text(singInStatus),
+          //   ),
+          // ),
         ],
       ),
     );

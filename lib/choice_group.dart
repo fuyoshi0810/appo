@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:appo/main.dart';
 
 class ChoiceGroup extends StatefulWidget {
   const ChoiceGroup({super.key});
@@ -33,7 +34,11 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               // ignore: use_build_context_synchronously
-              Navigator.pushNamed(context, '/');
+              // Navigator.pushNamed(context, '/');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LogInPage()),
+              );
             },
           ),
         ],
@@ -63,7 +68,7 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
               child: Column(
                 children: [
                   const SizedBox(
-                    height: 500,
+                    height: 400,
                     child: Text("表示可能なグループはありません"),
                   ),
                   TextButton(
@@ -81,7 +86,7 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: 500,
+                    height: 400,
                     child: Scrollbar(
                       child: ListView.builder(
                         shrinkWrap: true,

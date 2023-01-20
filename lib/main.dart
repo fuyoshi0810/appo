@@ -54,7 +54,7 @@ import 'group_menu.dart';
 // }
 
 /// メイン
-void main() async {
+Future<void> main() async {
   /// クラッシュハンドラ
   // runZonedGuarded<Future<void>>(() async {
   /// Firebaseの初期化
@@ -71,6 +71,7 @@ void main() async {
       child: MyApp(),
     ),
   );
+  // runApp(MyApp());
   // },
 
   /// クラッシュハンドラ(Flutterフレームワーク内でキャッチされないエラー)
@@ -79,25 +80,26 @@ void main() async {
 }
 
 /// Authのサインイン状態のprovider
-final signInStateProvider = StateProvider((ref) => 'サインインまたはアカウントを作成してください');
+// final signInStateProvider = StateProvider((ref) => 'サインインまたはアカウントを作成してください');
 
 /// サインインユーザーの情報プロバイダー
-final userProvider = StateProvider<User?>((ref) => null);
-final userEmailProvider = StateProvider<String>((ref) => 'ログインしていません');
+// final userProvider = StateProvider<User?>((ref) => null);
+// final userEmailProvider = StateProvider<String>((ref) => 'ログインしていません');
 
-class MyApp extends ConsumerWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'LoginPage',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       routes: {
-        '/': (context) => const LogInPage(), //ログイン画面
-        '/c_account': (context) => const CreateAccount(), //アカウント作成画面
+        '/log': (context) => LogInPage(), //ログイン画面
+        // '/': (context) => const LogInPage(), //ログイン画面
+        '/c_account': (context) => CreateAccount(), //アカウント作成画面
         '/s_list': (context) => ScheduleList(), //スケジュール一覧画面
         '/c_schedule': (context) => CreateSchedule(), //スケジュール作成画面
         '/e_schedule': (context) => const EditSchedule(), //スケジュール編集画面
@@ -118,147 +120,120 @@ class MyApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       debugShowCheckedModeBanner: false,
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox();
+          }
+          if (snapshot.hasData) {
+            // return ChoiceGroup();
+            return ChoiceGroup();
+          }
+          return LogInPage();
+          // return ChoiceGroup();
+        },
+      ),
     );
   }
 }
 
-class LogInPage extends ConsumerStatefulWidget {
-  const LogInPage({Key? key}) : super(key: key);
+class LogInPage extends StatefulWidget {
+  // const LogInPage({Key? key}) : super(key: key);
 
   @override
-  LogInPageState createState() => LogInPageState();
+  _LogInPage createState() => _LogInPage();
 }
 
-class LogInPageState extends ConsumerState<LogInPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class _LogInPage extends State<LogInPage> {
+  final _auth = FirebaseAuth.instance;
+
+  String email = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
-    final singInStatus = ref.watch(signInStateProvider);
-    final mailController = TextEditingController();
-    final passController = TextEditingController();
-
-    /// ユーザー情報の取得
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        ref.watch(userEmailProvider.state).state = 'ログインしていません';
-      } else {
-        ref.watch(userEmailProvider.state).state = user.email!;
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: const Text('ログイン'),
-        //戻るボタン非表示
-        automaticallyImplyLeading: false,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(10),
-        children: <Widget>[
-          /// ユーザ情報の表示 　　　後で消す
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.person),
-              Text(ref.watch(userEmailProvider)),
-            ],
-          ),
-          TextField(
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              label: Text('メールアドレス'),
-              icon: Icon(Icons.mail),
-            ),
-            controller: mailController,
-          ),
-
-          /// パスワード入力
-          TextField(
-            decoration: const InputDecoration(
-              label: Text('パスワード'),
-              icon: Icon(Icons.key),
-            ),
-            controller: passController,
-            obscureText: true,
-          ),
-
-          /// ログイン
-          Container(
-            margin: const EdgeInsets.all(10),
-            child: ElevatedButton(
-              onPressed: () {
-                _signIn(ref, mailController.text, passController.text, context);
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              onChanged: (value) {
+                email = value;
               },
-              child: const Text('ログイン'),
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                hintText: 'メールアドレスを入力',
+              ),
             ),
           ),
-
-          TextButton(
-            child: const Text("アカウントを作成"),
-            onPressed: () {
-              //グループ選択画面へ遷移
-              Navigator.pushNamed(context, '/c_account');
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              onChanged: (value) {
+                password = value;
+              },
+              obscureText: true,
+              decoration: const InputDecoration(
+                hintText: 'パスワードを入力',
+              ),
+            ),
+          ),
+          ElevatedButton(
+            child: const Text('ログイン'),
+            onPressed: () async {
+              try {
+                final newUser = await _auth.signInWithEmailAndPassword(
+                    email: email, password: password);
+                if (newUser != null) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ChoiceGroup()));
+                }
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'invalid-email') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(''),
+                    ),
+                  );
+                  print('メールアドレスのフォーマットが正しくありません');
+                } else if (e.code == 'user-disabled') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('現在指定したメールアドレスは使用できません'),
+                    ),
+                  );
+                  print('現在指定したメールアドレスは使用できません');
+                } else if (e.code == 'user-not-found') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('指定したメールアドレスは登録されていません'),
+                    ),
+                  );
+                  print('指定したメールアドレスは登録されていません');
+                } else if (e.code == 'wrong-password') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('パスワードが間違っています'),
+                    ),
+                  );
+                  print('パスワードが間違っています');
+                }
+              }
             },
           ),
-
-          /// サインインのメッセージ表示
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: Center(
-              child: Text(singInStatus),
-            ),
-          ),
+          TextButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CreateAccount()));
+              },
+              child: Text('新規登録はこちらから'))
         ],
       ),
     );
-  }
-}
-
-/// サインイン処理
-void _signIn(
-    WidgetRef ref, String email, String pass, BuildContext context) async {
-  try {
-    /// credential にはアカウント情報が記録される
-    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: pass,
-    );
-
-    /// ユーザ情報の更新
-    ref.watch(userProvider.state).state = credential.user;
-
-    /// 画面に表示
-    // ref.read(signInStateProvider.state).state = 'サインインできました!';
-    ref.read(signInStateProvider.state).state = 'サインインまたはアカウントを作成してください';
-    // ignore: use_build_context_synchronously
-    Navigator.pushNamed(context, '/choice_group');
-  }
-
-  /// サインインに失敗した場合のエラー処理
-  on FirebaseAuthException catch (e) {
-    /// メールアドレスが無効の場合
-    if (e.code == 'invalid-email') {
-      ref.read(signInStateProvider.state).state = 'メールアドレスが無効です';
-    }
-
-    /// ユーザーが存在しない場合
-    else if (e.code == 'user-not-found') {
-      ref.read(signInStateProvider.state).state = 'ユーザーが存在しません';
-    }
-
-    /// パスワードが間違っている場合
-    else if (e.code == 'wrong-password') {
-      ref.read(signInStateProvider.state).state = 'パスワードが間違っています';
-    }
-
-    /// その他エラー
-    else {
-      ref.read(signInStateProvider.state).state = 'メールアドレス・パスワードを正しく入力してください';
-    }
   }
 }

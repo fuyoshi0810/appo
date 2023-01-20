@@ -1,4 +1,5 @@
 import 'package:appo/choice_group.dart';
+import 'package:appo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,7 +25,13 @@ class GroupMenu extends StatelessWidget {
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               // ignore: use_build_context_synchronously
-              Navigator.pushNamed(context, '/');
+              // Navigator.pushNamed(context, '/');
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => LogInPage()));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LogInPage()),
+              );
             },
           ),
         ],
