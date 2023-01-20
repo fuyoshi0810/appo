@@ -111,7 +111,6 @@ class _MyAppState extends State<TestApp> {
   }
 
   Future<void> updateUI(dynamic data) async {
-    print("updateui");
     final log = await FileManager.readLogFile();
 
     LocationDto? locationDto =
@@ -125,7 +124,6 @@ class _MyAppState extends State<TestApp> {
     setState(() {
       if (data != null) {
         lastLocation = locationDto;
-        print("datain");
       }
       logStr = log;
     });
@@ -201,18 +199,22 @@ class _MyAppState extends State<TestApp> {
     final Periodic = SizedBox(
       width: double.maxFinite,
       child: ElevatedButton(
-          child: Text('Periodic'),
+          child: Text('simpletask for test'),
           onPressed: Platform.isAndroid
-              ? () {
-                  Workmanager().registerPeriodicTask(
-                    "3",
-                    simplePeriodicTask,
-                    inputData: <String, dynamic>{
-                      'double': lastLocation!.latitude.toString() +
-                          lastLocation!.longitude.toString(),
-                      'string': idokeido,
-                    },
-                  );
+              ? () async {
+                  await Future.delayed(Duration(seconds: 10), () {});
+                  for (int i = 0; i < 3; i++) {
+                    Workmanager().registerOneOffTask(
+                      i.toString(),
+                      fetchBackground,
+                      inputData: <String, dynamic>{
+                        'String': lastLocation!.latitude.toString() +
+                            "・" +
+                            lastLocation!.longitude.toString()
+                      },
+                    );
+                    await Future.delayed(Duration(seconds: 10), () {});
+                  }
                 }
               : null),
     );
@@ -252,7 +254,7 @@ class _MyAppState extends State<TestApp> {
     final pop = SizedBox(
       width: double.maxFinite,
       child: ElevatedButton(
-        child: Text('色々確認ボタン'),
+        child: Text(kari),
         onPressed: () {
           print(lastLocation!.latitude.toString());
           print(idokeido.toString());
@@ -312,7 +314,6 @@ class _MyAppState extends State<TestApp> {
   }
 
   void _onStart() async {
-    print("onstart");
     if (await _checkLocationPermission()) {
       await _startLocator();
       final _isRunning = await BackgroundLocator.isServiceRunning();
@@ -351,7 +352,6 @@ class _MyAppState extends State<TestApp> {
   }
 
   Future<void> _startLocator() async {
-    print("startloca");
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
         LocationCallbackHandler.callback,
