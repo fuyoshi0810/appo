@@ -1,8 +1,11 @@
+import 'package:appo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 //firebase;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+//アカウント登録の文字変更してない
 
 /// Authのサインイン状態のprovider
 final signInStateProvider = StateProvider((ref) => 'アカウントを作成してください');
@@ -105,12 +108,21 @@ class AuthPageState extends ConsumerState<CreateAccount> {
                       'email': mailController.text,
                       'password': passController.text,
                       'groupList': [],
-                      'invList': [],
+                      // 'invList': [],
                       'lat': '',
                       'lng': '',
                       'createdAt': FieldValue.serverTimestamp(),
                       'updatedAt': FieldValue.serverTimestamp(),
                     });
+
+                    //もどらない
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (BuildContext context) => LogInPage(),
+                    //   ),
+                    // );
+                    Navigator.pop(context);
                   } else {
                     ref.read(signInStateProvider.state).state =
                         'ユーザー名を入力してください';

@@ -1,3 +1,4 @@
+import 'package:appo/choice_group.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -164,7 +165,15 @@ class _CreateGroupState extends State<CreateGroup> {
         });
       }
 
-      Navigator.pushNamed(context, '/choice_group');
+      // Navigator.pushNamed(context, '/choice_group');
+      // if (!context.mounted) return;
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (BuildContext context) => const ChoiceGroup(),
+      //   ),
+      // );
+      Navigator.pop(context);
     }
   }
 }

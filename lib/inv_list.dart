@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//データベースのinvList関連変更してない
+
 // 招待されているグループ一覧画面
 // ログイン画面→グループ選択画面→ここ
 
@@ -20,7 +22,6 @@ class _InvListState extends State<InvList> {
     return Scaffold(
       appBar: AppBar(),
       body: StreamBuilder<DocumentSnapshot>(
-        // body: new StreamBuilder<DocumentSnapshot>(
         stream:
             // FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
             userdb.doc(uid).snapshots(),
@@ -115,7 +116,6 @@ class _InvListState extends State<InvList> {
 
   void accept(gid, gname, uid, uname) async {
     await userdb.doc(uid).update({
-      // await FirebaseFirestore.instance.collection('users').doc(uid).update({
       'groupList': FieldValue.arrayUnion([
         {'groupId': gid, 'groupName': gname}
       ]),
@@ -124,7 +124,6 @@ class _InvListState extends State<InvList> {
       ]),
     });
 
-    // await FirebaseFirestore.instance.collection('groups').doc(gid).update({
     await groupdb.doc(gid).update({
       'members': FieldValue.arrayUnion([
         {'userId': uid, 'userName': uname, "lat": "", "lng": ""}

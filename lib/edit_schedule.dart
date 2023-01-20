@@ -353,93 +353,6 @@ class EditScheduleState extends State<EditSchedule> {
           ),
         ),
       ),
-
-      // body: Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: <Widget>[
-      //       // Text(scheid.toString()),
-      //       // Text(g_id),
-      //       TextField(
-      //         decoration: const InputDecoration(
-      //           label: Text('スケジュール名'),
-      //         ),
-      //         controller: scheduleController,
-      //       ),
-      //       Row(
-      //         mainAxisAlignment: MainAxisAlignment.center,
-      //         children: <Widget>[
-      //           Text('$dateFormat'),
-      //           ElevatedButton(
-      //             onPressed: () {
-      //               _datePicker(context);
-      //             },
-      //             child: const Text("日付を選択"),
-      //           ),
-      //           Text("${dTime.hour}時${dTime.minute}分"),
-      //           ElevatedButton(
-      //             onPressed: () {
-      //               _timePicker(context);
-      //             },
-      //             child: const Text("時刻を選択"),
-      //           )
-      //         ],
-      //       ),
-      //       ElevatedButton(
-      //         onPressed: () async {
-      //           Navigator.pushNamed(context, '/s_list');
-
-      //           await FirebaseFirestore.instance
-      //               .collection('groups')
-      //               .doc(g_id)
-      //               .collection('shcedules')
-      //               .doc(s_id)
-      //               .update({
-      //             "schedules": FieldValue.arrayUnion([
-      //               {
-      //                 "scheduleName": scheduleController.text,
-      //                 "meetingTime": milibyou.millisecondsSinceEpoch,
-      //                 "meetingPlace": [lat, lng],
-      //                 //仮置き
-      //                 "scheduleId": DateTime.now().toString(),
-      //                 // "participant": {あ},
-      //                 // "updatedAt": FieldValue.serverTimestamp(),
-      //               },
-      //             ]),
-      //           });
-
-      //           // await db.collection('groups').doc(g_id).update({
-      //           //   "schedules": FieldValue.arrayUnion([
-      //           //     {
-      //           //       "scheduleName": scheduleController.text,
-      //           //       "meetingTime": milibyou.millisecondsSinceEpoch,
-      //           //       "meetingPlace": [lat, lng],
-      //           //       //仮置き
-      //           //       "scheduleId": DateTime.now().toString(),
-      //           //       // "participant": {あ},
-      //           //       // "updatedAt": FieldValue.serverTimestamp(),
-      //           //     },
-      //           //   ]),
-      //           // });
-
-      //           // await FirebaseFirestore.instance
-      //           //     .collection("groups")
-      //           //     .doc(scheduleController.text)
-      //           //     .set({
-      //           //   "schedule": {
-      //           //     "name": scheduleController.text,
-      //           //     "meetingTime": dateFormat+dTimeあ,
-      //           //     "meetingPlace": 緯度経度,
-      //           //     "person": {あ},
-      //           //     "updatedAt": FieldValue.serverTimestamp(),
-      //           //   },
-      //           // });
-      //         },
-      //         child: const Text("スケジュールを変更"),
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 
@@ -465,7 +378,7 @@ class EditScheduleState extends State<EditSchedule> {
           // "updatedAt": FieldValue.serverTimestamp(),
         });
 
-        Navigator.pushNamed(context, '/s_list', arguments: g_id);
+        Navigator.pop(context);
       }
     } else {
       print("登録失敗");

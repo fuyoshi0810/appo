@@ -8,6 +8,8 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//暗号化
+
 const kGoogleApiKey = "AIzaSyD_HBnp6ybK_wylg-CSbGTMnh5AQvxEiX0";
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
@@ -87,30 +89,76 @@ class _MapBody extends State<Map> {
     final groupdb = FirebaseFirestore.instance.collection('groups');
     var glat;
     var glng;
-    var testlist = [];
+    var placelist = [];
+    var testtestlist = [];
     var glatlist = [];
     var glnglist = [];
+
     void getUserLocation() {
-      groupdb.doc(g_id).snapshots().listen(
+      // groupdb.doc(g_id).snapshots().listen(
+      //   (event) {
+      //     print("current data: ${event.data()}");
+      //     var aaa = event.data()!['schedules'];
+      //     for (var b in aaa) {
+      //       testlist = b['meetingPlace'];
+      //     }
+      //     var c = aaa[0];
+      //     print(c);
+      //     for (int i = 0; i < aaa.length; i++) {
+      //       if (c['meetingTime'] > aaa[i]['meetingTime']) {
+      //         c = aaa[i];
+      //       }
+      //       print("いい");
+      //       // print("${i}個目" + aaa[i]);
+      //     }
+      //     print("ああ");
+      //     print(c['meetingPlace']);
+      //     glat = c['meetingPlace'][0];
+      //     glng = c['meetingPlace'][1];
+      //     print("メンバーの位置" + event.data()!['members'].toString());
+      //     for (var a in event.data()!['members']) {
+      //       glatlist.add(a['lat']);
+      //       glnglist.add(a['lng']);
+      //       print("メンバー" + a['lat']);
+      //     }
+      //   },
+      //   onError: (error) => print("Listen failed: $error"),
+      // );
+      groupdb
+          .doc(g_id)
+          .collection('schedules')
+          .where("meetingTime", isNotEqualTo: "0")
+          .snapshots()
+          .listen(
         (event) {
-          print("current data: ${event.data()}");
-          var aaa = event.data()!['schedules'];
-          for (var b in aaa) {
-            testlist = b['meetingPlace'];
+          print("current data: ${event.docs}");
+          for (var doc in event.docs) {
+            placelist = doc.data()['meetingPlace'];
+            testtestlist.add(doc.data()['meetingTime']);
           }
-          var c = aaa[0];
-          print(c);
-          for (int i = 0; i < aaa.length; i++) {
-            if (c['meetingTime'] > aaa[i]['meetingTime']) {
-              c = aaa[i];
+          var listzero = event.docs[0];
+          print(listzero);
+          for (int i = 0; i < event.docs.length; i++) {
+            if (listzero['meetingTime'] > testtestlist[i]) {
+              listzero = event.docs[i];
             }
-            print("いい");
-            // print("${i}個目" + aaa[i]);
           }
           print("ああ");
-          print(c['meetingPlace']);
-          glat = c['meetingPlace'][0];
-          glng = c['meetingPlace'][1];
+          print(listzero['meetingPlace']);
+          glat = listzero['meetingPlace'][0];
+          glng = listzero['meetingPlace'][1];
+          // print("メンバーの位置" + testtestlist.toString());
+          // for (var a in testtestlist) {
+          //   glatlist.add(a['lat']);
+          //   glnglist.add(a['lng']);
+          //   print("メンバー" + a['lat']);
+          // }
+        },
+        onError: (error) => print("Listen failed: $error"),
+      );
+
+      groupdb.doc(g_id).snapshots().listen(
+        (event) {
           print("メンバーの位置" + event.data()!['members'].toString());
           for (var a in event.data()!['members']) {
             glatlist.add(a['lat']);

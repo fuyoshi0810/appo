@@ -24,6 +24,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'group_menu.dart';
 
+//グループ一覧遷移時戻らないようにする
+//ログイン済みの場合飛ばす
+
 // await Firebase.initializeApp(
 //   options: DefaultFirebaseOptions.currentPlatform,
 // );

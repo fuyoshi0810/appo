@@ -1,3 +1,4 @@
+import 'package:appo/schedule_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -245,7 +246,7 @@ class CreateScheduleState extends State<CreateSchedule> {
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue, //ボタンの背景色
-                        minimumSize: Size(5, 30)),
+                        minimumSize: const Size(5, 30)),
                     child: const Text("時刻を選択"),
                   )
                 ],
@@ -376,42 +377,6 @@ class CreateScheduleState extends State<CreateSchedule> {
                 },
                 child: const Text("スケジュール保存"),
               ),
-              // ElevatedButton(
-              //   onPressed: () async {
-              //     print("データフォーマット＋ｄタイム" +
-              //         dateFormat.toString() +
-              //         dTime.toString());
-              //     print("date======" + date.toString());
-
-              //     // await schedb
-              //     //     .doc(scheduleController.text + date.toString())
-              //     //     .set({
-              //     //   "scheduleName": scheduleController.text,
-              //     //   "meetingTime": date,
-              //     //   "meetingPlace": [lat, lng],
-              //     //   // "participant": [],
-              //     //   "updatedAt": FieldValue.serverTimestamp(),
-              //     // });
-
-              //     await groupdb.doc(g_id).update({
-              //       "schedules": FieldValue.arrayUnion([
-              //         {
-              //           "scheduleName": scheduleController.text,
-              //           "meetingTime": date,
-              //           "meetingPlace": [lat, lng],
-              //           // "participant": {あ},
-              //           "updatedAt": FieldValue.serverTimestamp(),
-              //         },
-              //       ]),
-              //     });
-              //     // await userdb.doc(uid).update({
-              //     //   "lat": lat,
-              //     //   "lng": lng,
-              //     // });
-              //     Navigator.pushNamed(context, '/s_list', arguments: g_id);
-              //   },
-              //   child: const Text("スケジュール保存"),
-              // ),
             ],
           ),
         ),
@@ -463,7 +428,9 @@ class CreateScheduleState extends State<CreateSchedule> {
         //   "lat": lat,
         //   "lng": lng,
         // });
-        Navigator.pushNamed(context, '/s_list', arguments: g_id);
+
+        // Navigator.pushNamed(context, '/s_list', arguments: g_id);
+        Navigator.pop(context);
       }
     } else {
       print("登録失敗");
