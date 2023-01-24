@@ -19,6 +19,7 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        automaticallyImplyLeading: false,
         title: const Text('グループ一覧'),
         actions: <Widget>[
           IconButton(
@@ -64,11 +65,13 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
           List<dynamic> groupList = snapshot.data!["groupList"];
 
           if (groupList.isEmpty) {
-            return Center(
+            return SingleChildScrollView(
+                //追加
+                child: Center(
               child: Column(
                 children: [
                   const SizedBox(
-                    height: 400,
+                    height: 500,
                     child: Text("表示可能なグループはありません"),
                   ),
                   TextButton(
@@ -79,14 +82,14 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
                   ),
                 ],
               ),
-            );
+            ));
           } else {
             return SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: 400,
+                    height: 500,
                     child: Scrollbar(
                       child: ListView.builder(
                         shrinkWrap: true,

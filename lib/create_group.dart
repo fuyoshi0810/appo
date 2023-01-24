@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//　グループ作成時　サブコレクションも作成するようにする
+
 class CreateGroup extends StatefulWidget {
   const CreateGroup({Key? key, required this.onSubmit}) : super(key: key);
   final ValueChanged<String> onSubmit;

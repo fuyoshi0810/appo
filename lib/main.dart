@@ -23,6 +23,7 @@ import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'group_menu.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 //グループ一覧遷移時戻らないようにする
 //ログイン済みの場合飛ばす
@@ -155,6 +156,7 @@ class _LogInPage extends State<LogInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('ログイン'),
       ),
       body: Column(
@@ -231,9 +233,24 @@ class _LogInPage extends State<LogInPage> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => CreateAccount()));
               },
-              child: Text('新規登録はこちらから'))
+              child: Text('新規登録'))
         ],
       ),
     );
   }
+
+//   void functiontest() async {
+//   try {
+//     /// カウントアップの関数の読み出し
+//     final result = await FirebaseFunctions.instance
+//         .httpsCallable('deleteSchedule')
+//         .call({'groupName': _number, });
+//     _number = result.data['addNumber'];
+//     print(result.data['contextUid']);
+//   } on FirebaseFunctionsException catch (error) {
+//     print(error.code);
+//     print(error.details);
+//     print(error.message);
+//   }
+// }
 }

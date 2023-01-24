@@ -1,9 +1,11 @@
+import 'package:appo/choice_group.dart';
 import 'package:appo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 //firebase;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 //アカウント登録の文字変更してない
 
@@ -33,6 +35,7 @@ class AuthPageState extends State<CreateAccount> {
     final userController = TextEditingController();
     final mailController = TextEditingController();
     final passController = TextEditingController();
+    final passController2 = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -70,13 +73,23 @@ class AuthPageState extends State<CreateAccount> {
             obscureText: true,
           ),
 
+          TextField(
+            decoration: const InputDecoration(
+              label: Text('パスワード(再入力)'),
+              icon: Icon(Icons.key),
+            ),
+            controller: passController2,
+            obscureText: true,
+          ),
+
           /// アカウント作成
           Container(
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () async {
                 try {
-                  if (userController.text != "") {
+                  if (userController.text != "" &&
+                      passController.text == passController2.text) {
                     /// credential にはアカウント情報が記録される
                     final credential = await FirebaseAuth.instance
                         .createUserWithEmailAndPassword(
@@ -115,17 +128,24 @@ class AuthPageState extends State<CreateAccount> {
                       'updatedAt': FieldValue.serverTimestamp(),
                     });
 
+                    // Fluttertoast.showToast(msg: "登録完了");
+
                     //もどらない
-                    // Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (BuildContext context) => LogInPage(),
-                    //   ),
-                    // );
-                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => ChoiceGroup(),
+                      ),
+                    );
+                    // Navigator.pop(context);
                   } else {
                     // ref.read(signInStateProvider.state).state =
                     // 'ユーザー名を入力してください';
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('入力情報を正しく入力してください'),
+                      ),
+                    );
                   }
                 }
 
