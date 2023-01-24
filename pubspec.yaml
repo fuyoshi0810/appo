@@ -57,6 +57,10 @@ dependencies:
   flutter_google_places: ^0.3.0
   location: ^4.2.0 
   cloud_functions: ^4.0.5
+  background_locator_2: ^2.0.5
+  path_provider: ^2.0.11
+  workmanager: ^0.5.1
+  location_permissions: ^4.0.0
   
 
 
