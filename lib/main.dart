@@ -17,7 +17,6 @@ import 'package:appo/create_group.dart';
 import 'package:appo/settings_group.dart';
 import 'package:appo/group_menu.dart';
 import 'package:appo/invite.dart';
-import 'package:appo/test.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -110,7 +109,6 @@ class MyApp extends ConsumerWidget {
               onSubmit: (String value) {},
             ), //グループ作成画面
         '/choice_group': (context) => ChoiceGroup(), //グループ選択画面
-        '/test': (context) => TestApp(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

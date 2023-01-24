@@ -5,7 +5,6 @@ import 'package:background_locator_2/location_dto.dart';
 import 'location_service_repository.dart';
 // import 'main.dart';
 // import 'create_schedule.dart';
-import 'test.dart';
 
 String lat = "";
 String lon = "";
