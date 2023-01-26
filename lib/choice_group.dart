@@ -35,11 +35,12 @@ const simplePeriodicTask =
 const fetchBackground = "fetchBackground";
 const myTask = "syncWithTheBackEnd";
 String idokeido = "";
-String kari = "";
-String latkari = "";
-String lngkari = "";
-int _counter = 0;
+String karilat = "";
+String karilon = "";
+int Counter = 0;
 Timer? timer;
+const latKey = '';
+const testkey = " ";
 
 @pragma(
     'vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
@@ -63,13 +64,14 @@ void callbackDispatcher() {
         print(idokeido);
         break;
       case fetchBackground:
-        print("$simplePeriodicTask was executed（フェッチバック）");
-        // if (latkari.length > 1) {
-        // final testdb = FirebaseFirestore.instance.collection('test').doc();
-        // await testdb.set({'lat': latkari, 'lng': lngkari});
-        // await testdb.set({'lat': "latkari", 'lng': "lngkari"});
-        // }
-        print("緯度経度" + kari);
+        print("$simplePeriodicTask was executed");
+        //SharedPreferencesから取得してfirebaseに送る
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        List test = prefs.getStringList('latlng_list') ?? [];
+        print(test.toString() + "ワークマネージャーじゃあああああああああああああ");
+        final testdb = FirebaseFirestore.instance.collection('test').doc();
+        await testdb.set({'lat': test.elementAt(0), 'lng': test.elementAt(1)});
+
         break;
       case myTask:
         print("aaaaa");
@@ -99,12 +101,16 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
   //追加
   @override
   void initState() {
-    super.initState();
     Workmanager().initialize(
       callbackDispatcher,
       isInDebugMode: true,
     );
-    _onStart();
+    workStart();
+    if (Counter == 0) {
+      _onStart();
+      Counter = 1;
+      print(Counter.toString() + "カウンター");
+    }
 
     if (IsolateNameServer.lookupPortByName(
             LocationServiceRepository.isolateName) !=
@@ -122,16 +128,31 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
       },
     );
     initPlatformState();
+
+    @override
+    dispose() {
+      Workmanager().cancelAll();
+      onStop();
+      Counter = 0;
+      print(Counter.toString() + "カウンター");
+      print("disposeeeeeあああああああああああああああああ");
+      super.dispose();
+    }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  void workStart() {
+    Timer.periodic(Duration(minutes: 5), // 5分毎にループ
+        (timer) {
+      Workmanager().registerOneOffTask(
+        "work",
+        fetchBackground,
+        inputData: <String, dynamic>{'String': karilat + " " + karilon},
+      );
+    });
   }
 
   Future<void> updateUI(dynamic data) async {
     final log = await FileManager.readLogFile();
-
     LocationDto? locationDto =
         (data != null) ? LocationDto.fromJson(data) : null;
     await _updateNotificationText(locationDto!);
@@ -139,14 +160,13 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
     idokeido = locationDto.latitude.toString() +
         " " +
         locationDto.longitude.toString();
-
     setState(() {
       if (data != null) {
         lastLocation = locationDto;
-        kari =
-            locationDto.latitude.toString() + locationDto.longitude.toString();
-        latkari = locationDto.latitude.toString();
-        lngkari = locationDto.longitude.toString();
+        // kari =
+        //     locationDto.latitude.toString() + locationDto.longitude.toString();
+        karilat = lastLocation!.latitude.toString();
+        karilon = lastLocation!.longitude.toString();
       }
       logStr = log;
     });
@@ -157,11 +177,9 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
       return;
     }
 
-    Workmanager().registerOneOffTask(
-      "work",
-      fetchBackground,
-      inputData: <String, dynamic>{'String': kari},
-    );
+    //SharedPreferencesに送る
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('latlng_list', [karilat, karilon]);
 
     await BackgroundLocator.updateNotificationText(
         title: "new location received",
@@ -282,6 +300,7 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
                     onPressed: () async {
                       await Workmanager().cancelAll();
                       onStop();
+                      Counter = 0;
                     },
                   ),
                 ],
