@@ -36,6 +36,8 @@ const fetchBackground = "fetchBackground";
 const myTask = "syncWithTheBackEnd";
 String idokeido = "";
 String kari = "";
+String latkari = "";
+String lngkari = "";
 int _counter = 0;
 Timer? timer;
 
@@ -54,18 +56,20 @@ void callbackDispatcher() {
         print("Bool from prefs: ${prefs.getBool("test")}");
         break;
       case simpleDelayedTask:
-        print("$simpleDelayedTask was executed");
+        print("$simpleDelayedTask was executed(シンプルディレイ)");
         break;
       case simplePeriodicTask:
-        print("$simplePeriodicTask was executed");
+        print("$simplePeriodicTask was executed(シンプルペリオディック)");
         print(idokeido);
         break;
       case fetchBackground:
-        print("$simplePeriodicTask was executed");
+        print("$simplePeriodicTask was executed（フェッチバック）");
+        // if (latkari.length > 1) {
         // final testdb = FirebaseFirestore.instance.collection('test').doc();
-        // await testdb.set({
-        //   'a': "a",
-        // });
+        // await testdb.set({'lat': latkari, 'lng': lngkari});
+        // await testdb.set({'lat': "latkari", 'lng': "lngkari"});
+        // }
+        print("緯度経度" + kari);
         break;
       case myTask:
         print("aaaaa");
@@ -141,6 +145,8 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
         lastLocation = locationDto;
         kari =
             locationDto.latitude.toString() + locationDto.longitude.toString();
+        latkari = locationDto.latitude.toString();
+        lngkari = locationDto.longitude.toString();
       }
       logStr = log;
     });

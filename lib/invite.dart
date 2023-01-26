@@ -191,99 +191,9 @@ class _InviteState extends State<Invite> {
                 ]),
               ),
             );
-
-            // return SingleChildScrollView(
-            //   child: Column(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       SizedBox(
-            //         height: 500,
-            //         child: Scrollbar(
-            //           child: ListView.builder(
-            //             shrinkWrap: true,
-            //             itemCount: vocabulary.length,
-            //             itemBuilder: (context, index) => ListTile(
-            //               title: Text(vocabulary[index].toString()),
-            //               onTap: (() {
-            //                 print(vocabulary.length);
-            //                 Navigator.pushNamed(context, '/g_menu',
-            //                     arguments: vocabulary[index]);
-            //               }),
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //       TextButton(
-            //         child: Text("グループ作成"),
-            //         onPressed: () {
-            //           Navigator.pushNamed(context, '/c_group');
-            //         },
-            //       ),
-            //     ],
-            //   ),
-            // );
           }
         },
       ),
-
-      // body: Center(
-      //   child: SizedBox(
-      //     // width: 200,
-      //     height: 600,
-      //     child: SingleChildScrollView(
-      //       // child: SizedBox(
-      //       // height: 500,
-      //       child: Column(children: [
-      //         Row(
-      //           children: [
-      //             Expanded(
-      //               flex: 2,
-      //               child: TextField(
-      //                 keyboardType: TextInputType.number,
-      //                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      //                 maxLength: 12,
-      //                 obscureText: false,
-      //                 maxLines: 1,
-      //                 controller: useridController,
-      //                 decoration: InputDecoration(
-      //                   hintText: 'ユーザーidを入力してください',
-      //                   labelText: 'ユーザー検索',
-      //                   errorText: _errorText,
-      //                 ),
-      //               ),
-      //             ),
-      //             Expanded(
-      //               flex: 1,
-      //               child: ElevatedButton(
-      //                 child: Text("検索"),
-      //                 onPressed: () {
-      //                   if (useridController.value.text.length == 12) {
-      //                     _submit(g_id);
-      //                     // _addmember(useridController.text);
-      //                   } else {
-      //                     null;
-      //                   }
-      //                 },
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //         SizedBox(
-      //           height: 500,
-      //           child: Scrollbar(
-      //             child: ListView.builder(
-      //               shrinkWrap: true,
-      //               itemCount: invList.length,
-      //               itemBuilder: (context, index) => ListTile(
-      //                 title: Text(invList[index]),
-      //               ),
-      //             ),
-      //           ),
-      //         )
-      //       ]),
-      //     ),
-      //   ),
-      // ),
     );
   }
 
