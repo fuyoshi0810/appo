@@ -68,7 +68,7 @@ void callbackDispatcher() {
         //SharedPreferencesから取得してfirebaseに送る
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         List test = prefs.getStringList('latlng_list') ?? [];
-        // print(test.toString() + "ワークマネージャーじゃあああああああああああああ");
+        print(test.toString() + "ワークマネージャーじゃあああああああああああああ");
         final testdb = FirebaseFirestore.instance.collection('test').doc();
         await testdb.set({'lat': test.elementAt(0), 'lng': test.elementAt(1)});
         break;
@@ -100,11 +100,12 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
   //追加
   @override
   void initState() {
+    Workmanager().initialize(
+      callbackDispatcher,
+      isInDebugMode: true,
+    );
+    workStart();
     if (Counter == 0) {
-      Workmanager().initialize(
-        callbackDispatcher,
-        isInDebugMode: true,
-      );
       _onStart();
       Counter = 1;
       print(Counter.toString() + "カウンター");
@@ -126,16 +127,27 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
       },
     );
     initPlatformState();
+
+    @override
+    dispose() {
+      Workmanager().cancelAll();
+      onStop();
+      Counter = 0;
+      print(Counter.toString() + "カウンター");
+      print("disposeeeeeあああああああああああああああああ");
+      super.dispose();
+    }
   }
 
-  @override
-  dispose() {
-    Workmanager().cancelAll();
-    onStop();
-    Counter = 0;
-    print(Counter.toString() + "カウンター");
-    print("あああああああああああああああああ");
-    super.dispose();
+  void workStart() {
+    Timer.periodic(Duration(minutes: 5), // 5分毎にループ
+        (timer) {
+      Workmanager().registerOneOffTask(
+        "work",
+        fetchBackground,
+        inputData: <String, dynamic>{'String': karilat + " " + karilon},
+      );
+    });
   }
 
   Future<void> updateUI(dynamic data) async {
@@ -169,12 +181,6 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
     //SharedPreferencesに送る
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setStringList('latlng_list', [karilat, karilon]);
-
-    Workmanager().registerOneOffTask(
-      "work",
-      fetchBackground,
-      inputData: <String, dynamic>{'String': karilat + " " + karilon},
-    );
 
     await BackgroundLocator.updateNotificationText(
         title: "new location received",
@@ -295,6 +301,7 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
                     onPressed: () async {
                       await Workmanager().cancelAll();
                       onStop();
+                      Counter = 0;
                     },
                   ),
                 ],
