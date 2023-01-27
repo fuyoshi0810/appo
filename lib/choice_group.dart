@@ -69,8 +69,12 @@ void callbackDispatcher() {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         List test = prefs.getStringList('latlng_list') ?? [];
         print(test.toString() + "ワークマネージャーじゃあああああああああああああ");
-        final testdb = FirebaseFirestore.instance.collection('test').doc();
-        await testdb.set({'lat': test.elementAt(0), 'lng': test.elementAt(1)});
+        // final testdb = FirebaseFirestore.instance.collection('test').doc();
+        final uid = FirebaseAuth.instance.currentUser!.uid;
+        final usersdb = FirebaseFirestore.instance.collection('users').doc(uid);
+        // await testdb.set({'lat': test.elementAt(0), 'lng': test.elementAt(1)});
+        await usersdb
+            .update({'lat': test.elementAt(0), 'lng': test.elementAt(1)});
 
         break;
       case myTask:
