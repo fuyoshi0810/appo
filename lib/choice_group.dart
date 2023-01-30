@@ -92,7 +92,7 @@ class ChoiceGroup extends StatefulWidget {
   State<ChoiceGroup> createState() => _ChoiceGroupState();
 }
 
-class _ChoiceGroupState extends State<ChoiceGroup> {
+class _ChoiceGroupState extends State<ChoiceGroup> with WidgetsBindingObserver {
   final uid = FirebaseAuth.instance.currentUser!.uid;
   final userdb = FirebaseFirestore.instance.collection('users');
 
@@ -132,15 +132,24 @@ class _ChoiceGroupState extends State<ChoiceGroup> {
       },
     );
     initPlatformState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
-    @override
-    dispose() {
+  @override
+  dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    Workmanager().cancelAll();
+    onStop();
+    Counter = 0;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
       Workmanager().cancelAll();
       onStop();
       Counter = 0;
-      print(Counter.toString() + "カウンター");
-      print("disposeeeeeあああああああああああああああああ");
-      super.dispose();
     }
   }
 
