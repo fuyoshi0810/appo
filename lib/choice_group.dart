@@ -105,10 +105,10 @@ class _ChoiceGroupState extends State<ChoiceGroup> with WidgetsBindingObserver {
   //追加
   @override
   void initState() {
-    Workmanager().initialize(
-      callbackDispatcher,
-      isInDebugMode: true,
-    );
+    // Workmanager().initialize(
+    //   callbackDispatcher,
+    //   isInDebugMode: true,
+    // );
     workStart();
     if (Counter == 0) {
       _onStart();
