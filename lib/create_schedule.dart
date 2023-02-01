@@ -10,19 +10,6 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:geolocator/geolocator.dart';
-
-// import 'package:cloud_functions/cloud_functions.dart';
-// final functions = FirebaseFunctions.instance;
-// final result =
-//     await FirebaseFunctions.instance.httpsCallable('addMessage').call();
-// try {
-//   final result =
-//       await FirebaseFunctions.instance.httpsCallable('addMessage').call();
-// } on FirebaseFunctionsException catch (error) {
-//   print(error.code);
-//   print(error.details);
-//   print(error.message);
-// }
 import 'package:http/http.dart' as http;
 
 const kGoogleApiKey = "AIzaSyD_HBnp6ybK_wylg-CSbGTMnh5AQvxEiX0";
@@ -87,14 +74,10 @@ class CreateScheduleState extends State<CreateSchedule> {
   }
 
   String? get _errorText {
-    // at any time, we can get the text from _controller.value.text
     final text = scheduleController.value.text;
-    // Note: you can do your own custom validation here
-    // Move this logic this outside the widget for more testable code
     if (text.isEmpty) {
       return '1文字から10文字の間で入力してください';
     }
-    // return null if the text is valid
     return null;
   }
 
@@ -126,11 +109,6 @@ class CreateScheduleState extends State<CreateSchedule> {
       setState(() {
         dTime = timePicked;
         zifun = timePicked;
-        // zifun = zifun.hour.toString() + zifun.minute.toString();
-        // zifun.millisecondsSinceEpoch;
-
-        print("時間分" + zifun.toString());
-        // print(zifun.hour.toString());
       });
     }
   }
@@ -208,7 +186,6 @@ class CreateScheduleState extends State<CreateSchedule> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // Text(DateTime.now().toString()),
               TextField(
                 decoration: InputDecoration(
                   label: Text('スケジュール名'),
@@ -230,7 +207,7 @@ class CreateScheduleState extends State<CreateSchedule> {
                       _datePicker(context);
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, //ボタンの背景色
+                        backgroundColor: Colors.blue,
                         minimumSize: const Size(5, 30)),
                     child: const Text("日付を選択"),
                   ),
@@ -245,7 +222,7 @@ class CreateScheduleState extends State<CreateSchedule> {
                       _timePicker(context);
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, //ボタンの背景色
+                        backgroundColor: Colors.blue,
                         minimumSize: const Size(5, 30)),
                     child: const Text("時刻を選択"),
                   )
@@ -276,15 +253,10 @@ class CreateScheduleState extends State<CreateSchedule> {
                       await _places.getDetailsByPlaceId(p!.placeId.toString());
                   var placeId = p.placeId;
                   String placeName = p.description.toString();
-                  // double lat = detail.result.geometry!.location.lat;
-                  // double lng = detail.result.geometry!.location.lng;
                   lat = detail.result.geometry!.location.lat;
                   lng = detail.result.geometry!.location.lng;
                   final reg = RegExp(
                       r'[\u3040-\u309F]|\u3000|[\u30A1-\u30FC]|[\u4E00-\u9FFF]');
-                  //latlang
-                  print("lat=" + lat.toString());
-                  print("lng=" + lng.toString());
                   //英語の住所を出して日本語を正規表現で抜き出している
                   print("全体情報=" + p.description.toString());
                   Iterable<RegExpMatch> matches = reg.allMatches(placeName);
@@ -314,7 +286,7 @@ class CreateScheduleState extends State<CreateSchedule> {
                   setState(() {});
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, //ボタンの背景色
+                    backgroundColor: Colors.blue,
                     minimumSize: const Size(5, 30)),
                 child: const Text("検索"),
               ),
@@ -354,21 +326,6 @@ class CreateScheduleState extends State<CreateSchedule> {
                     print("登録成功");
                     milibyou =
                         DateTime(ayear, amonth, aday, zifun.hour, zifun.minute);
-                    print(milibyou.toString());
-                    print(milibyou.millisecondsSinceEpoch);
-                    // setState(() {
-                    //   _saveTime(
-                    //       'time',
-                    //       DateTime(
-                    //         ayear, //DateTime
-                    //         amonth, //DateTime
-                    //         aday, //DateTime
-                    //         zifun.hour, // TimeOfDay
-                    //         zifun.minute, //TimeOfDay
-                    //       ).toString());
-                    //   // これで　2022-06-22 10:00:00.000　こんな感じになる
-                    // });
-
                     _submit(g_id);
                   } else {
                     print("null登録失敗");
@@ -385,30 +342,10 @@ class CreateScheduleState extends State<CreateSchedule> {
   }
 
   void _submit(g_id) async {
-    // if there is no error text
     if (_errorText == null) {
-      // notify the parent widget via the onSubmit callback
-      // widget.onSubmit(groupController.value.text);
-
       if (FirebaseAuth.instance.currentUser != null) {
         final uid = FirebaseAuth.instance.currentUser!.uid;
-        // final groupdb = FirebaseFirestore.instance.collection('groups');
-        // final userbd = FirebaseFirestore.instance.collection('users').doc(uid);
         var userName;
-
-        // await groupdb.doc(g_id).update({
-        //   "schedules": FieldValue.arrayUnion([
-        //     {
-        //       "scheduleName": scheduleController.text,
-        //       "meetingTime": milibyou.millisecondsSinceEpoch,
-        //       "meetingPlace": [lat, lng],
-        //       //仮置き
-        //       "scheduleId": DateTime.now().toString(),
-        //       // "participant": {あ},
-        //       // "updatedAt": FieldValue.serverTimestamp(),
-        //     },
-        //   ]),
-        // });
 
         await groupdb
             .doc(g_id)
@@ -420,16 +357,8 @@ class CreateScheduleState extends State<CreateSchedule> {
           "meetingPlace": [lat, lng],
           //仮置き
           "scheduleId": DateTime.now().toString(),
-          // "participant": {あ},
           // "updatedAt": FieldValue.serverTimestamp(),
         });
-
-        // await userdb.doc(uid).update({
-        //   "lat": lat,
-        //   "lng": lng,
-        // });
-
-        // Navigator.pushNamed(context, '/s_list', arguments: g_id);
         Navigator.pop(context);
       }
     } else {

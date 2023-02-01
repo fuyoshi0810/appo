@@ -61,11 +61,7 @@ class SettingsGroup extends StatelessWidget {
                         itemCount: members.length,
                         itemBuilder: (context, index) => ListTile(
                           title: Text(members[index]['userName'].toString()),
-                          onTap: (() {
-                            print(members.length);
-                            // Navigator.pushNamed(context, '/g_menu',
-                            //     arguments: members[index]['groupId']);
-                          }),
+                          onTap: (() {}),
                         ),
                       ),
                     ),
@@ -73,15 +69,12 @@ class SettingsGroup extends StatelessWidget {
                   TextButton(
                     child: const Text("招待"),
                     onPressed: () {
-                      print(g_id);
                       Navigator.pushNamed(context, '/invite', arguments: g_id);
                     },
                   ),
                   TextButton(
                     child: const Text("解散"),
-                    onPressed: () {
-                      // Navigator.pushNamed(context, '/invite');
-                    },
+                    onPressed: () {},
                   ),
                 ],
               ),

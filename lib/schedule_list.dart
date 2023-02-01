@@ -39,11 +39,8 @@ class _ScheduleListState extends State<ScheduleList> {
             }
             if (snapshot.data!.docs.length > 0) {
               return SizedBox(
-                // width: 200,
                 height: 600,
                 child: SingleChildScrollView(
-                  // child: SizedBox(
-                  // height: 500,
                   child: Column(
                     children: [
                       SizedBox(
@@ -55,9 +52,6 @@ class _ScheduleListState extends State<ScheduleList> {
                               itemBuilder: (context, index) {
                                 return Row(
                                   children: [
-                                    // Expanded(
-                                    //   child: Text(sList[index]['scheduleName']),
-                                    // ),
                                     Expanded(
                                       child: ListTile(
                                         title: Text(snapshot.data!.docs[index]
@@ -78,7 +72,6 @@ class _ScheduleListState extends State<ScheduleList> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          print(g_id);
                           Navigator.pushNamed(context, '/c_schedule',
                               arguments: g_id);
                         },

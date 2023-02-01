@@ -77,14 +77,10 @@ class EditScheduleState extends State<EditSchedule> {
   }
 
   String? get _errorText {
-    // at any time, we can get the text from _controller.value.text
     final text = scheduleController.value.text;
-    // Note: you can do your own custom validation here
-    // Move this logic this outside the widget for more testable code
     if (text.isEmpty) {
       return '1文字から10文字の間で入力してください';
     }
-    // return null if the text is valid
     return null;
   }
 
@@ -116,19 +112,13 @@ class EditScheduleState extends State<EditSchedule> {
       setState(() {
         dTime = timePicked;
         zifun = timePicked;
-        // zifun = zifun.hour.toString() + zifun.minute.toString();
-        // zifun.millisecondsSinceEpoch;
-
-        print("時間分" + zifun.toString());
       });
     }
   }
 
   _saveTime(String key, String value) async {
     var prefs = await SharedPreferences.getInstance();
-    print("ぷれふ" + prefs.toString());
     prefs.setString(key, value);
-    print("ぷれふ" + prefs.toString());
   }
 
   void _getUserLocation() async {
@@ -181,7 +171,6 @@ class EditScheduleState extends State<EditSchedule> {
 
   @override
   Widget build(BuildContext context) {
-    // final scheduleController = TextEditingController();
     final List sgList = ModalRoute.of(context)?.settings.arguments as List;
     String g_id = sgList[0];
     String s_id = sgList[1];
@@ -195,7 +184,6 @@ class EditScheduleState extends State<EditSchedule> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // Text(DateTime.now().toString()),
               TextField(
                 decoration: InputDecoration(
                   label: Text('スケジュール名'),
@@ -217,7 +205,7 @@ class EditScheduleState extends State<EditSchedule> {
                       _datePicker(context);
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, //ボタンの背景色
+                        backgroundColor: Colors.blue,
                         minimumSize: const Size(5, 30)),
                     child: const Text("日付を選択"),
                   ),
@@ -232,8 +220,7 @@ class EditScheduleState extends State<EditSchedule> {
                       _timePicker(context);
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, //ボタンの背景色
-                        minimumSize: Size(5, 30)),
+                        backgroundColor: Colors.blue, minimumSize: Size(5, 30)),
                     child: const Text("時刻を選択"),
                   )
                 ],
@@ -263,17 +250,11 @@ class EditScheduleState extends State<EditSchedule> {
                       await _places.getDetailsByPlaceId(p!.placeId.toString());
                   var placeId = p.placeId;
                   String placeName = p.description.toString();
-                  // double lat = detail.result.geometry!.location.lat;
-                  // double lng = detail.result.geometry!.location.lng;
                   lat = detail.result.geometry!.location.lat;
                   lng = detail.result.geometry!.location.lng;
                   final reg = RegExp(
                       r'[\u3040-\u309F]|\u3000|[\u30A1-\u30FC]|[\u4E00-\u9FFF]');
-                  //latlang
-                  print("lat=" + lat.toString());
-                  print("lng=" + lng.toString());
                   //英語の住所を出して日本語を正規表現で抜き出している
-                  print("全体情報=" + p.description.toString());
                   Iterable<RegExpMatch> matches = reg.allMatches(placeName);
                   for (final m in matches) {
                     print(m[0]);
@@ -301,7 +282,7 @@ class EditScheduleState extends State<EditSchedule> {
                   setState(() {});
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, //ボタンの背景色
+                    backgroundColor: Colors.blue,
                     minimumSize: const Size(5, 30)),
                 child: const Text("検索"),
               ),
@@ -374,7 +355,6 @@ class EditScheduleState extends State<EditSchedule> {
           "meetingPlace": [lat, lng],
           //仮置き
           "scheduleId": DateTime.now().toString(),
-          // "participant": {あ},
           // "updatedAt": FieldValue.serverTimestamp(),
         });
 

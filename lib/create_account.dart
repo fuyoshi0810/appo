@@ -7,14 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-//アカウント登録の文字変更してない
-
-/// Authのサインイン状態のprovider
-// final signInStateProvider = StateProvider((ref) => 'アカウントを作成してください');
-
-/// サインインユーザーの情報プロバイダー
-// final userProvider = StateProvider<User?>((ref) => null);
-
 /// ページ設定
 class CreateAccount extends StatefulWidget {
   const CreateAccount({Key? key}) : super(key: key);
@@ -121,14 +113,12 @@ class AuthPageState extends State<CreateAccount> {
                       'email': mailController.text,
                       'password': passController.text,
                       'groupList': [],
-                      // 'invList': [],
+                      'invList': [],
                       'lat': '',
                       'lng': '',
                       'createdAt': FieldValue.serverTimestamp(),
                       'updatedAt': FieldValue.serverTimestamp(),
                     });
-
-                    // Fluttertoast.showToast(msg: "登録完了");
 
                     //もどらない
                     Navigator.pushReplacement(
@@ -137,7 +127,6 @@ class AuthPageState extends State<CreateAccount> {
                         builder: (BuildContext context) => ChoiceGroup(),
                       ),
                     );
-                    // Navigator.pop(context);
                   } else {
                     // ref.read(signInStateProvider.state).state =
                     // 'ユーザー名を入力してください';

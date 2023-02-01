@@ -43,7 +43,6 @@ class _MapBody extends State<Map> {
       autofocus: true, //TextFieldが表示されるときにフォーカスする（キーボードを表示する）
       cursorColor: Colors.white, //カーソルの色
       style: TextStyle(
-        //テキストのスタイル
         color: Colors.white,
         fontSize: 20,
       ),
@@ -57,7 +56,6 @@ class _MapBody extends State<Map> {
             borderSide: BorderSide(color: Colors.white)),
         hintText: 'Search', //何も入力してないときに表示されるテキスト
         hintStyle: TextStyle(
-          //hintTextのスタイル
           color: Colors.white60,
           fontSize: 20,
         ),
@@ -80,7 +78,6 @@ class _MapBody extends State<Map> {
     setState(() {
       _initialPosition = LatLng(position.latitude, position.longitude);
       _loading = false;
-      // print(position);
     });
   }
 
@@ -104,35 +101,7 @@ class _MapBody extends State<Map> {
       glatlist = [];
       glnglist = [];
       namelist = [];
-      // groupdb.doc(g_id).snapshots().listen(
-      //   (event) {
-      //     print("current data: ${event.data()}");
-      //     var aaa = event.data()!['schedules'];
-      //     for (var b in aaa) {
-      //       testlist = b['meetingPlace'];
-      //     }
-      //     var c = aaa[0];
-      //     print(c);
-      //     for (int i = 0; i < aaa.length; i++) {
-      //       if (c['meetingTime'] > aaa[i]['meetingTime']) {
-      //         c = aaa[i];
-      //       }
-      //       print("いい");
-      //       // print("${i}個目" + aaa[i]);
-      //     }
-      //     print("ああ");
-      //     print(c['meetingPlace']);
-      //     glat = c['meetingPlace'][0];
-      //     glng = c['meetingPlace'][1];
-      //     print("メンバーの位置" + event.data()!['members'].toString());
-      //     for (var a in event.data()!['members']) {
-      //       glatlist.add(a['lat']);
-      //       glnglist.add(a['lng']);
-      //       print("メンバー" + a['lat']);
-      //     }
-      //   },
-      //   onError: (error) => print("Listen failed: $error"),
-      // );
+
       groupdb
           .doc(g_id)
           .collection('schedules')
@@ -140,41 +109,28 @@ class _MapBody extends State<Map> {
           .snapshots()
           .listen(
         (event) {
-          print("current data: ${event.docs}");
           for (var doc in event.docs) {
             placelist = doc.data()['meetingPlace'];
             testtestlist.add(doc.data()['meetingTime']);
           }
           var listzero = event.docs[0];
-          print(listzero);
           for (int i = 0; i < event.docs.length; i++) {
             if (listzero['meetingTime'] > testtestlist[i]) {
               listzero = event.docs[i];
             }
           }
-          print("ああ");
           print(listzero['meetingPlace']);
           glat = listzero['meetingPlace'][0];
           glng = listzero['meetingPlace'][1];
           placename = listzero['scheduleName'].toString();
-          // print("メンバーの位置" + testtestlist.toString());
-          // for (var a in testtestlist) {
-          //   glatlist.add(a['lat']);
-          //   glnglist.add(a['lng']);
-          //   print("メンバー" + a['lat']);
-          // }
         },
         onError: (error) => print("Listen failed: $error"),
       );
 
       groupdb.doc(g_id).snapshots().listen(
         (event) {
-          print("メンバーの位置" + event.data()!['members'].toString());
           for (var a in event.data()!['members']) {
-            // glatlist.add(a['lat']);
-            // glnglist.add(a['lng']);
             userIds.add(a['userId']);
-            print("メンバー" + a['lat']);
           }
         },
         onError: (error) => print("Listen failed: $error"),
@@ -182,41 +138,19 @@ class _MapBody extends State<Map> {
 
       groupdb.doc(g_id).snapshots().listen(
         (event) {
-          print("メンバーの位置" + event.data()!['members'].toString());
           for (var a in event.data()!['members']) {
-            // glatlist.add(a['lat']);
-            // glnglist.add(a['lng']);
             userIds.add(a['userId']);
-            print("メンバー" + userIds.toString());
           }
-        },
-        onError: (error) => print("Listen failed: $error"),
-      );
-
-      userdb.doc().snapshots().listen(
-        (event) {
-          print("ゆーざーどく" + event.data().toString());
-          // for (var a in event.data()) {
-          //   // glatlist.add(a['lat']);
-          //   // glnglist.add(a['lng']);
-          //   userIds.add(a['userId']);
-          //   print("メンバー" + a['lat']);
-          // }
         },
         onError: (error) => print("Listen failed: $error"),
       );
 
       userdb.get().then((QuerySnapshot snapshot) {
         snapshot.docs.forEach((doc) {
-          /// usersコレクションのドキュメントIDを取得する
-          print(doc.id);
           if (userIds.contains(doc.id)) {
             glatlist.add(doc.get('lat'));
             glnglist.add(doc.get('lng'));
             namelist.add(doc.get('userName'));
-            print("らっとりすと" + glatlist.toString());
-            print("らんぐりすと" + glnglist.toString());
-            print("名前りすと" + namelist.toString());
           }
         });
       });
@@ -293,14 +227,7 @@ class _MapBody extends State<Map> {
               _loading = true;
               getUserLocation();
               Future.delayed(Duration(seconds: 2), () async {
-                print("はじまり");
                 for (int len = 0; len < glatlist.length; len++) {
-                  print("るーぷ");
-                  print("らっと" + glatlist.toString());
-                  print("らんぐ" + glnglist.toString());
-                  print(glatlist.length);
-                  print(namelist.toString());
-                  print(glatlist[len]);
                   _markers.add(Marker(
                       markerId: MarkerId(len.toString()),
                       position: LatLng(double.parse(glatlist[len]),
@@ -329,48 +256,8 @@ class _MapBody extends State<Map> {
                 }
                 print("おわり");
               });
-
-              // Future.delayed(Duration(seconds: 5), () async {
-              //   for (int i = 0; i > glatlist.length; i++) {
-              //     _markers.add(Marker(
-              //         markerId: MarkerId(i.toString()),
-              //         position: LatLng(glatlist[i], glnglist[i]),
-              //         infoWindow: InfoWindow(
-              //           title: location,
-              //           snippet: "仮置き",
-              //         )));
-              //     Position position = await Geolocator.getCurrentPosition(
-              //         desiredAccuracy: LocationAccuracy.high);
-              //     setState(() {
-              //       _initialPosition =
-              //           LatLng(position.latitude, position.longitude);
-              //       _loading = false;
-              //       print(position);
-              //     });
-              //   }
-              // });
             })
       ]),
-      //ハンバーガーメニュー
-      // drawer: Drawer(
-      //     child: ListView(
-      //   children: [
-      //     DrawerHeader(
-      //         decoration: BoxDecoration(color: Colors.yellowAccent),
-      //         child: Text("各画面遷移")),
-      //     ListTile(
-      //       title: Text("スケジュール一覧"),
-      //       onTap: () {
-      //         Navigator.pushNamed(context, '/s_list');
-      //       },
-      //     ),
-      //     ListTile(
-      //         title: Text("退出"),
-      //         onTap: () {
-      //           Navigator.pushNamed(context, '/g_menu');
-      //         }),
-      //   ],
-      // )),
       body: _loading
           ? const CircularProgressIndicator()
           : SafeArea(

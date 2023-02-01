@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-//データベースのinvList関連変更してない
-
-// 招待されているグループ一覧画面
-// ログイン画面→グループ選択画面→ここ
-
 class InvList extends StatefulWidget {
   @override
   State<InvList> createState() => _InvListState();
@@ -22,9 +17,7 @@ class _InvListState extends State<InvList> {
     return Scaffold(
       appBar: AppBar(),
       body: StreamBuilder<DocumentSnapshot>(
-        stream:
-            // FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
-            userdb.doc(uid).snapshots(),
+        stream: userdb.doc(uid).snapshots(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
@@ -136,14 +129,12 @@ class _InvListState extends State<InvList> {
 
   void delete(gid, gname, uid, uname) async {
     await userdb.doc(uid).update({
-      // await FirebaseFirestore.instance.collection('users').doc(uid).update({
       'invList': FieldValue.arrayRemove([
         {'groupId': gid, 'groupName': gname}
       ])
     });
 
     await groupdb.doc(gid).update({
-      // await FirebaseFirestore.instance.collection('groups').doc(gid).update({
       'invList': FieldValue.arrayRemove([
         {'userId': uid, 'userName': uname}
       ])

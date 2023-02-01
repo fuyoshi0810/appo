@@ -25,36 +25,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'group_menu.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-//グループ一覧遷移時戻らないようにする
-//ログイン済みの場合飛ばす
-
-// await Firebase.initializeApp(
-//   options: DefaultFirebaseOptions.currentPlatform,
-// );
-// void main() {
-//   runApp(const MyApp());
-// }
-
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp();
-
-// // Ideal time to initialize
-//   await FirebaseAuth.instance.useAuthEmulator('localhost', 9002);
-
-// //Webでやるなら認証情報の永続化設定が必要
-//   FirebaseAuth.instance.authStateChanges().listen((User? user) {
-//     if (user == null) {
-//       print('User is currently signed out!');
-//       runApp(const ProviderScope(child: MyApp()));
-//     } else {
-//       print('User is signed in!');
-//       runApp(ChoiceGroup());
-//     }
-//   });
-// }
-
-/// メイン
 Future<void> main() async {
   /// クラッシュハンドラ
   // runZonedGuarded<Future<void>>(() async {
@@ -64,28 +34,12 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  /// クラッシュハンドラ(Flutterフレームワーク内でスローされたすべてのエラー)
-  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
   runApp(
     const ProviderScope(
       child: MyApp(),
     ),
   );
-  // runApp(MyApp());
-  // },
-
-  /// クラッシュハンドラ(Flutterフレームワーク内でキャッチされないエラー)
-  // (error, stack) =>
-  // FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
 }
-
-/// Authのサインイン状態のprovider
-// final signInStateProvider = StateProvider((ref) => 'サインインまたはアカウントを作成してください');
-
-/// サインインユーザーの情報プロバイダー
-// final userProvider = StateProvider<User?>((ref) => null);
-// final userEmailProvider = StateProvider<String>((ref) => 'ログインしていません');
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -128,11 +82,9 @@ class MyApp extends StatelessWidget {
             return const SizedBox();
           }
           if (snapshot.hasData) {
-            // return ChoiceGroup();
             return ChoiceGroup();
           }
           return LogInPage();
-          // return ChoiceGroup();
         },
       ),
     );
@@ -238,19 +190,4 @@ class _LogInPage extends State<LogInPage> {
       ),
     );
   }
-
-//   void functiontest() async {
-//   try {
-//     /// カウントアップの関数の読み出し
-//     final result = await FirebaseFunctions.instance
-//         .httpsCallable('deleteSchedule')
-//         .call({'groupName': _number, });
-//     _number = result.data['addNumber'];
-//     print(result.data['contextUid']);
-//   } on FirebaseFunctionsException catch (error) {
-//     print(error.code);
-//     print(error.details);
-//     print(error.message);
-//   }
-// }
 }

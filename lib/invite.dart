@@ -23,14 +23,10 @@ class _InviteState extends State<Invite> {
   }
 
   String? get _errorText {
-    // at any time, we can get the text from _controller.value.text
     final text = useridController.value.text;
-    // Note: you can do your own custom validation here
-    // Move this logic this outside the widget for more testable code
     if (text.length == 12) {
       return null;
     }
-    // return null if the text is valid
     return '12文字で入力してください';
   }
 
@@ -68,7 +64,6 @@ class _InviteState extends State<Invite> {
             return const Text("Loading");
           }
           var userDocument = snapshot.data;
-          // return new Text(userDocument!["userName"]);
 
           List<dynamic> invList = snapshot.data!["invList"];
 
@@ -103,7 +98,6 @@ class _InviteState extends State<Invite> {
                           onPressed: () {
                             if (useridController.value.text.length == 12) {
                               _submit(g_id);
-                              // _addmember(useridController.text);
                             } else {
                               null;
                             }
@@ -121,8 +115,6 @@ class _InviteState extends State<Invite> {
               // width: 200,
               height: 600,
               child: SingleChildScrollView(
-                // child: SizedBox(
-                // height: 500,
                 child: Column(children: [
                   Row(
                     children: [
@@ -151,7 +143,6 @@ class _InviteState extends State<Invite> {
                           onPressed: () {
                             if (useridController.value.text.length == 12) {
                               _submit(g_id);
-                              // _addmember(useridController.text);
                             } else {
                               null;
                             }
@@ -222,32 +213,21 @@ class _InviteState extends State<Invite> {
       var uDocId = '';
       var uname = 'aaaaaa';
 
-      // var invp =
       await userdb.where('userId', isEqualTo: useridController.text).get().then(
             (QuerySnapshot snapshot) => {
               snapshot.docs.forEach((f) {
                 uDocId = f.reference.id;
                 uname = f['userName'];
-                print('userNameis' + uname);
-                print("documentID---- " + f.reference.id);
               }),
             },
           );
 
-      if (uDocId == '') {
-        print("nulllll");
-      } else {
-        print('nullじゃない');
-      }
-
       var groupRef = await groupdoc.get();
-      var groupdata =
-          groupRef.exists ? groupRef.data() : null; // `data()`で中身を取り出す
-      print("グループ名" + groupdata!['groupName']);
+      var groupdata = groupRef.exists ? groupRef.data() : null;
 
       await userdb.doc(uDocId).update({
         'invList': FieldValue.arrayUnion([
-          {'groupId': g, 'groupName': groupdata['groupName']}
+          {'groupId': g, 'groupName': groupdata!['groupName']}
         ]),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -266,7 +246,6 @@ class _InviteState extends State<Invite> {
         },
         onError: (e) => print("Error getting document: $e"),
       );
-      print("リスト" + invList.toString());
       _text = "招待を送りました";
     }
   }

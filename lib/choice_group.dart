@@ -223,8 +223,6 @@ class _ChoiceGroupState extends State<ChoiceGroup> with WidgetsBindingObserver {
             tooltip: 'ログアウト',
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
-              // ignore: use_build_context_synchronously
-              // Navigator.pushNamed(context, '/');
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LogInPage()),
