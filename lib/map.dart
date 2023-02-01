@@ -90,6 +90,7 @@ class _MapBody extends State<Map> {
     final String g_id = ModalRoute.of(context)?.settings.arguments as String;
     final groupdb = FirebaseFirestore.instance.collection('groups');
     final userdb = FirebaseFirestore.instance.collection('users');
+    var placename;
     var glat;
     var glng;
     var placelist = [];
@@ -155,6 +156,7 @@ class _MapBody extends State<Map> {
           print(listzero['meetingPlace']);
           glat = listzero['meetingPlace'][0];
           glng = listzero['meetingPlace'][1];
+          placename = listzero['scheduleName'].toString();
           // print("メンバーの位置" + testtestlist.toString());
           // for (var a in testtestlist) {
           //   glatlist.add(a['lat']);
@@ -290,7 +292,7 @@ class _MapBody extends State<Map> {
             onPressed: () async {
               _loading = true;
               getUserLocation();
-              Future.delayed(Duration(seconds: 5), () async {
+              Future.delayed(Duration(seconds: 2), () async {
                 print("はじまり");
                 for (int len = 0; len < glatlist.length; len++) {
                   print("るーぷ");
@@ -306,6 +308,15 @@ class _MapBody extends State<Map> {
                       infoWindow: InfoWindow(
                         title: namelist[len],
                         // snippet: "仮置き",
+                      )));
+                  _markers.add(Marker(
+                      markerId: MarkerId('location'),
+                      position: LatLng(glat, glng),
+                      icon: BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueGreen),
+                      infoWindow: InfoWindow(
+                        title: placename,
+                        // snippet: p.description,
                       )));
                   Position position = await Geolocator.getCurrentPosition(
                       desiredAccuracy: LocationAccuracy.high);

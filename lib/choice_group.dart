@@ -67,15 +67,8 @@ void callbackDispatcher() {
         print("$simplePeriodicTask was executed");
         //SharedPreferencesから取得してfirebaseに送る
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        List test = prefs.getStringList('latlng_list') ?? [];
-        print(test.toString() + "ワークマネージャーじゃあああああああああああああ");
-        // final testdb = FirebaseFirestore.instance.collection('test').doc();
         final uid = FirebaseAuth.instance.currentUser!.uid;
         final usersdb = FirebaseFirestore.instance.collection('users').doc(uid);
-        // await testdb.set({'lat': test.elementAt(0), 'lng': test.elementAt(1)});
-        await usersdb
-            .update({'lat': test.elementAt(0), 'lng': test.elementAt(1)});
-
         break;
       case myTask:
         print("aaaaa");
@@ -154,7 +147,7 @@ class _ChoiceGroupState extends State<ChoiceGroup> with WidgetsBindingObserver {
   }
 
   void workStart() {
-    Timer.periodic(Duration(minutes: 5), // 5分毎にループ
+    Timer.periodic(Duration(minutes: 1), // 5分毎にループ
         (timer) {
       Workmanager().registerOneOffTask(
         "work",
@@ -176,8 +169,6 @@ class _ChoiceGroupState extends State<ChoiceGroup> with WidgetsBindingObserver {
     setState(() {
       if (data != null) {
         lastLocation = locationDto;
-        // kari =
-        //     locationDto.latitude.toString() + locationDto.longitude.toString();
         karilat = lastLocation!.latitude.toString();
         karilon = lastLocation!.longitude.toString();
       }
@@ -256,15 +247,10 @@ class _ChoiceGroupState extends State<ChoiceGroup> with WidgetsBindingObserver {
             return Text('Error: ${snapshot.error}');
           }
 
-          // if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return const Text("読み込み中…");
-          // }
-
           List<dynamic> groupList = snapshot.data!["groupList"];
 
           if (groupList.isEmpty) {
             return SingleChildScrollView(
-                //追加
                 child: Center(
               child: Column(
                 children: [
@@ -308,32 +294,10 @@ class _ChoiceGroupState extends State<ChoiceGroup> with WidgetsBindingObserver {
                       Navigator.pushNamed(context, '/c_group');
                     },
                   ),
-                  TextButton(
-                    child: const Text("stop"),
-                    onPressed: () async {
-                      await Workmanager().cancelAll();
-                      onStop();
-                      Counter = 0;
-                    },
-                  ),
                 ],
               ),
             );
           }
-
-          // return ListView.builder(
-          //   itemBuilder: (BuildContext context, int index) {
-          //     return Container(
-          //         decoration: BoxDecoration(
-          //           border: Border(
-          //             bottom: BorderSide(color: Colors.black38),
-          //           ),
-          //         ),
-          //         child: ListTile(onTap: () {
-          //           print(vocabulary);
-          //         }));
-          //   },
-          // );
         },
       ),
     );
@@ -413,6 +377,3 @@ class _ChoiceGroupState extends State<ChoiceGroup> with WidgetsBindingObserver {
                     LocationCallbackHandler.notificationCallback)));
   }
 }
-  // ),
-        // });
-  // }
